@@ -4,7 +4,6 @@ public class Problem9 {
 
   public static void main(String[] args) {
 
-    //entered 2091059712. was wrong. Had to convert int -> long
     System.out.printf("The answer is %d\n", compute());
   }
 
