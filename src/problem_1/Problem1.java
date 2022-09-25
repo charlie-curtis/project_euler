@@ -1,6 +1,5 @@
 package problem_1;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,8 +8,8 @@ public class Problem1 {
   public static void main(String [] args) {
 
     int number = 1000;
-    System.out.printf("\nThe sum of the multiples of 3 or 5 that are less than %d is %d\n", number, findMultiples(number));
-    System.out.printf("\n{HASHSET} The sum of the multiples of 3 or 5 that are less than %d is %d\n", number, findMultiplesUsingSet(number));
+    System.out.printf("The sum of the multiples of 3 or 5 that are less than %d is %d%n", number, findMultiples(number));
+    System.out.printf("{FAST} The sum of the multiples of 3 or 5 that are less than %d is %d%n", number, findMultiplesFast(number));
   }
 
   public static int findMultiples(int number) {
@@ -24,20 +23,20 @@ public class Problem1 {
     return sum;
   }
 
-  public static int findMultiplesUsingSet(int number) {
-    Set<Integer> set = new HashSet<>();
-
+  public static int findMultiplesFast(int number) {
     int i = 3;
+    int sum = 0;
     while (i < number) {
-      set.add(i);
+      sum+=i;
       i +=3;
     }
 
     i = 5;
     while (i < number) {
-      set.add(i);
+      //don't double count
+      sum += (i % 3 == 0) ? 0 : i;
       i +=5;
     }
-    return set.stream().reduce(0, (a,b) -> a+b);
+    return sum;
   }
 }
