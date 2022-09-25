@@ -1,4 +1,6 @@
-public class ProblemX {
+package problem_12;
+
+public class Problem12 {
 
   public static void main(String[] args) {
 
