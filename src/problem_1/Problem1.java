@@ -24,18 +24,14 @@ public class Problem1 {
   }
 
   public static int findMultiplesFast(int number) {
-    int i = 3;
     int sum = 0;
-    while (i < number) {
-      sum+=i;
-      i +=3;
+    for (int value = 3, k = 1; value < number; k++, value=3*k) {
+      sum+=value;
     }
 
-    i = 5;
-    while (i < number) {
+    for (int value = 5, k = 1; value < number; k++, value=5*k) {
       //don't double count
-      sum += (i % 3 == 0) ? 0 : i;
-      i +=5;
+      sum += (value % 3 == 0) ? 0 : value;
     }
     return sum;
   }
