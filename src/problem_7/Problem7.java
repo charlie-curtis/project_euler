@@ -1,7 +1,6 @@
-package Problem_7;
+package problem_7;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Problem7 {
 

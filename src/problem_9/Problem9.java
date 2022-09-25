@@ -1,6 +1,4 @@
-package Problem_9;
-
-import java.util.stream.LongStream;
+package problem_9;
 
 public class Problem9 {
 

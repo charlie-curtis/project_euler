@@ -1,6 +1,5 @@
-package Problem_6;
+package problem_6;
 
-import java.util.HashMap;
 import java.util.stream.LongStream;
 
 public class Problem6 {

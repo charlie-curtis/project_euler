@@ -1,4 +1,4 @@
-package Problem_8;
+package problem_8;
 
 import java.util.stream.LongStream;
 
