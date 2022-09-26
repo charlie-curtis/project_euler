@@ -5,25 +5,16 @@ import java.util.HashMap;
 public class Problem5 {
 
   public static void main(String[] args) {
-
-    System.out.printf("\nThe least common multiple is %d\n", getLeastCommonMultiple());
-    //232792560
+    System.out.printf("\nThe least common multiple is %d\n", getLeastCommonMultiple()); //232792560
   }
 
   public static int getLeastCommonMultiple() {
     HashMap<Integer, Integer> primeNumberToCountMap = new HashMap<>();
 
-    int i = 2;
     int endRange = 20;
 
-    while (i <= endRange) {
-      HashMap<Integer, Integer> answer = computePrimeFactors(i);
-      answer.forEach(
-        (divisor, count) -> primeNumberToCountMap.put(
-          divisor, Math.max(count, primeNumberToCountMap.getOrDefault(divisor, 0))
-        )
-      );
-      i++;
+    for (int i = 2; i <= endRange; i++) {
+      computeAndStorePrimeFactors(i, primeNumberToCountMap);
     }
 
     return primeNumberToCountMap.entrySet().stream().<Integer>mapMulti((entry, consumer) -> {
@@ -35,9 +26,7 @@ public class Problem5 {
     }).reduce(1, (a,b) -> a*b);
   }
 
-  public static HashMap<Integer, Integer> computePrimeFactors(int value) {
-
-    HashMap<Integer, Integer> answer = new HashMap<>();
+  public static void computeAndStorePrimeFactors(int value, HashMap<Integer, Integer> map) {
     int divisor = 2;
     while (value > 1) {
       int count = 0;
@@ -45,12 +34,10 @@ public class Problem5 {
         count++;
         value /= divisor;
       }
-      if (count != 0) {
-        answer.put(divisor, count);
-      }
+      //if this divisor has a higher count than what is previously stored, update it.
+      map.put(divisor, Math.max(count, map.getOrDefault(divisor, 0)));
       divisor++;
     }
-    return answer;
   }
 }
 

@@ -22,7 +22,7 @@ public class Problem8 {
     //size = 8
     //size - cutoff + 1
     //0 1 2 3 4 5 6 7
-    for (int i = 0; i <= parseInput().length - cutoff; i++) {
+    for (int i = 0; i + cutoff <= parseInput().length; i++) {
       long current = LongStream.range(i, i+cutoff).map((index) -> myInput[(int)index]).reduce(1, (a, b) -> a*b);
       max = Math.max(max, current);
     }
