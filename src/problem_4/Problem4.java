@@ -14,7 +14,7 @@ public class Problem4 {
 
     long max = 0;
     for (long i = rangeEnd; i >= rangeBegin; i--) {
-      for (long j = rangeEnd; j >= rangeBegin; j--) {
+      for (long j = i; j >= rangeBegin; j--) {
         if (isPalindrome(i*j)) {
           max = Math.max(max, i*j);
         }

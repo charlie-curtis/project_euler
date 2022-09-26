@@ -7,6 +7,7 @@ public class Problem5 {
   public static void main(String[] args) {
 
     System.out.printf("\nThe least common multiple is %d\n", getLeastCommonMultiple());
+    //232792560
   }
 
   public static int getLeastCommonMultiple() {

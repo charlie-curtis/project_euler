@@ -18,11 +18,10 @@ public class Problem2 {
 
     int evenSum = 0;
     while (currentTerm < CUTOFF_VALUE) {
-      if (currentTerm % 2 == 0) {
-        evenSum+= currentTerm;
-      }
+      evenSum+= (currentTerm % 2 == 0) ? currentTerm : 0;
+
       int temp = currentTerm;
-      currentTerm = currentTerm + previousTerm;
+      currentTerm+= previousTerm;
       previousTerm = temp;
     }
 
