@@ -4,51 +4,61 @@ import java.util.HashMap;
 
 public class Problem17 {
 
+  private static HashMap<Integer, String> map;
   public static void main(String[] args) {
-
+    map = getMap();
     System.out.printf("The answer is %d\n", compute());
   }
 
   public static long compute() {
 
     int cutoff = 1000;
-    var map = getMap();
+    int sum = 0;
     for (int i = 1; i <= 1000; i++) {
-      int val = i;
-      StringBuffer sb = new StringBuffer();
-      if (val <= 20 || val == 1000) {
-        sb.append(map.get(val));
-      } else if (val > 20 && val < 100) {
-        int firstNum = val % 10;
-        val /= 10;
-        int secondNum = val % 10;
-        sb.append(map.get(secondNum * 10));
-        if (firstNum != 0) {
-          sb.append(" " + map.get(firstNum));
-        }
-      } else {
-        int firstNum = val % 10;
-        val /= 10;
-        int secondNum = val % 10;
-        val /= 10;
-        int thirdNum = val % 10;
-        sb.append(map.get(thirdNum) + " hundred");
-        if (firstNum != 0 || secondNum != 0) {
-          sb.append(" and ");
-          if (secondNum != 0) {
-            sb.append(map.get(secondNum*10));
-          }
-          if (firstNum != 0) {
-            sb.append(" " + map.get(firstNum));
-          }
-        }
-      }
-      System.out.println(sb.toString().trim());
+      sum+= printNumber(i).replaceAll("\\s", "").length();
+      System.out.printf("%s%n", printNumber(i));
     }
-
-    return 0;
+    return sum;
   }
 
+  private static String printNumber(int number)
+  {
+    if (number % 10 == 0 && number < 100) {
+      //special number
+      return map.get(number);
+    }
+    if (number <= 20) {
+      //special number
+      return map.get(number);
+    }
+
+    if (number == 1000) {
+      //special number
+      return map.get(number);
+    }
+
+    String response = "";
+    int val = number;
+    if (val<=99) {
+      //number is between 21 and 999
+      int msb = val / 10;
+      int lsb = val % 10;
+      response = (map.get(msb * 10));
+      String remaining = printNumber(lsb);
+      if (remaining != null) {
+        response +=  " " + remaining;
+      }
+    } else {
+      int msb = val / 100;
+      response = map.get(msb) + " hundred";
+      String remaining = printNumber(number - msb*100);
+      if (remaining != null) {
+        response +=  " and " + remaining;
+      }
+
+    }
+    return response;
+  }
   private static HashMap<Integer, String> getMap()
   {
     HashMap<Integer, String> map = new HashMap<>();
