@@ -8,7 +8,7 @@ public class Problem24 {
   private static int CUTOFF = 1_000_000;
   public static void main(String[] args) {
 
-    System.out.printf("Answer is %s%n", compute());
+    compute();
   }
 
   /**
@@ -16,41 +16,32 @@ public class Problem24 {
    * The first way is printing the characters in lexicographical order. This was tricky because
    * it requires special attention to how characters are being swapped.
    * The second way is just permutating the characters, adding them to a set, then returning
-   * the 1 millionth entry in the set.
+   * the 1 millionth entry in the set. 9/28/22 - this approach has been removed for readability
    * @return
    */
-  public static String compute() {
+  public static void compute() {
 
     String s = "0123456789";
-
-    //tried 2785960341. it was wrong
-    permutations = new ArrayList<>();
-    printRecursive(s, 0, s.length()-1);
-    permutations.sort(Comparator.naturalOrder());
-
-    //We can either do this using a set, or print the 1M value
-    return permutations.get(CUTOFF-1);
+    printRecursive(s, 0);
   }
 
-  private static ArrayList<String> permutations;
   private static int count = 0;
-  public static void printRecursive(String s, int startIndex, int endIndex)
+  public static void printRecursive(String s, int startIndex)
   {
-    if (startIndex == endIndex) {
+    if (startIndex == s.length()-1) {
       //no more characters left to permutate
       count++;
       //System.out.println(s);
       if (count == CUTOFF) {
         System.out.printf("The 1M value is %s%n", s);
       }
-      permutations.add(s);
       return;
     }
 
     String original = s;
-    for (int i = startIndex; i <= endIndex; i++) {
+    for (int i = startIndex; i <= s.length()-1; i++) {
       s = insertCharacterForward(s, i, startIndex);
-      printRecursive(s, startIndex+1, endIndex);
+      printRecursive(s, startIndex+1);
       s = original;
     }
   }
