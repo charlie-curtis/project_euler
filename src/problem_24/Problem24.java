@@ -1,71 +1,58 @@
 package problem_24;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Problem24 {
 
   public static void main(String[] args) {
 
-    System.out.printf("The answer is %d\n", compute());
+    System.out.printf("Answer is %s%n", compute());
   }
 
-  public static long compute() {
+  public static String compute() {
 
-    List<Character> myList = List.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-    String s = "012";
+    String s = "0123456789";
 
-    for (int i = 0; i < myList.size(); i++) {
-      for (int j = i+1; j < myList.size(); j++) {
-        for (int k = j+1; k < myList.size(); k++) {
-          for (int l = k+1; l < myList.size(); l++) {
-            for (int m = l+1; m < myList.size(); m++) {
-              for (int n = m+1; n < myList.size(); n++) {
-                for (int o = n+1; o < myList.size(); o++) {
-                  for (int p = o+1; p < myList.size(); p++) {
-                    for (int q = p+1; q < myList.size(); q++) {
-                      for (int r = q + 1; r < myList.size(); r++) {
-                        System.out.printf("%s%s%s%s%s%s%s%s%s%s%n",
-                          myList.get(i),
-                          myList.get(j),
-                          myList.get(k),
-                          myList.get(l),
-                          myList.get(m),
-                          myList.get(n),
-                          myList.get(o),
-                          myList.get(p),
-                          myList.get(q),
-                          myList.get(r)
-                        );
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    //tried 2785960341. it was wrong
+    int cutoff = 1_000_000;
+    permutations = new ArrayList<>();
+    printRecursive(s, 0, s.length()-1);
+    permutations.sort(Comparator.naturalOrder());
 
-    return 0;
+    return permutations.get(cutoff -1);
   }
 
-  public static String printRecursive(String s)
+  private static ArrayList<String> permutations;
+  public static void printRecursive(String s, int startIndex, int endIndex)
   {
-    if (s.length() == 0) {
-      return "";
+    if (startIndex == endIndex) {
+      permutations.add(s);
+      //System.out.printf("Answer is %s%n", s);
+      return;
     }
-    StringBuffer sb = new StringBuffer();
-    for (int i = 0; i < s.length(); i++) {
-      if (i != 0) {
-        sb.append(printRecursive(s.substring(0, i)));
-      }
-      sb.append(s.substring(i, i+1));
-      if (i+1 != s.length()) {
-        sb.append(printRecursive(s.substring(i+1, s.length())));
-      }
+
+    // 0 1 2
+      //
+    // 1 0 2
+      //
+    // 2 1 0
+      //
+    for (int i = startIndex; i <= endIndex; i++) {
+      s = swap(s, startIndex, i);
+      //System.out.printf("Calling recursive with i = %d and s = %s%n", startIndex+1, s);
+      printRecursive(s, startIndex+1, endIndex);
+      s = swap(s, startIndex, i);
+
     }
-    return sb.toString();
+  }
+
+  private static String swap(String s, int i, int j)
+  {
+    char[] values = s.toCharArray();
+    values[i] = s.charAt(j);
+    values[j] = s.charAt(i);
+    return String.valueOf(values);
   }
 }
