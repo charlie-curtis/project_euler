@@ -12,25 +12,23 @@ public class Problem40 {
   }
 
   public static long compute() {
-    int cutoff = 1_000_000;
-    Set<Integer> digitsToLookFor = new HashSet<>(List.of(1, 10, 100, 1_000, 10_000, 100_000, 1_000_000));
+    Set<Integer> indexesToLookFor = new HashSet<>(List.of(1, 10, 100, 1_000, 10_000, 100_000, 1_000_000));
     int product = 1;
-    int digitsSoFar = 0;
-    int digitsFound = 0;
-    for (int i = 1; i<= cutoff; i++) {
-      if (digitsFound == digitsToLookFor.size()) {
-        break;
-      }
+    int currentIndex = 0;
+    int numberOfIndexesFound = 0;
+    int i = 1;
+    while (numberOfIndexesFound != indexesToLookFor.size()) {
       int digitsToAdd = (int)Math.log10(i) + 1;
       for (int j = 0; j < digitsToAdd; j++) {
-        digitsSoFar++;
-        if (digitsToLookFor.contains(digitsSoFar)) {
+        currentIndex++;
+        if (indexesToLookFor.contains(currentIndex)) {
           int digit = Integer.parseInt(String.valueOf(i).split("")[j]);
-          System.out.printf("multiplying by %d because the digit is %d%n", digit, digitsSoFar);
+          System.out.printf("multiplying by %d because the digit's place is %d%n", digit, currentIndex);
           product *= digit;
-          digitsFound++;
+          numberOfIndexesFound++;
         }
       }
+      i++;
     }
     return product;
   }
