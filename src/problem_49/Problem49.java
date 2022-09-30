@@ -31,6 +31,8 @@ public class Problem49 {
         if(primeHolder.contains(shiftedNumber)) {
           myList.add(shiftedNumber);
         }
+        //This is currently failing because I need to find the permutations of the number, not just
+        //the shifted number. Then I need to subtract and find the differences
         shiftedNumber = shiftNumber(shiftedNumber);
 
       } while (shiftedNumber != number);
