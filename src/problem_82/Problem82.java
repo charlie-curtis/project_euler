@@ -132,7 +132,6 @@ public class Problem82 {
     int[][] input = parser.to2DIntArray();
 
     int[][] holder = new int[input.length][input.length];
-    holder[input.length-1][input.length-1] = input[input.length-1][input.length-1];
     for (int i = holder.length - 1; i >= 0; i--) {
       holder[i][holder.length-1] = input[i][holder.length-1];
     }

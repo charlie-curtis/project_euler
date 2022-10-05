@@ -1,6 +1,8 @@
 package helpers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class PrimeCalculator {
 
@@ -12,6 +14,18 @@ public class PrimeCalculator {
     this.cutoff = cutoff;
     initializePrimeHolder();
   }
+
+  public ArrayList<Integer> getListOfPrimes()
+  {
+    ArrayList<Integer> list = new ArrayList<>();
+    for (int i = 2; i < isPrimeHolder.length; i++) {
+      if (isPrimeHolder[i]) {
+        list.add(i);
+      }
+    }
+    return list;
+  }
+
 
   public boolean isPrime(int n)
   {
