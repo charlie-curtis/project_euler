@@ -16,7 +16,8 @@ public class Problem82 {
   public static void main(String[] args) {
 
     System.out.printf("The answer is %d\n", compute());
-    System.out.printf("The answer is %d\n", computeSolveRecursively());
+    //For some reason the recursive version has a bug where it is off by a small margin (~6%)
+    //System.out.printf("The answer is %d\n", computeSolveRecursively());
   }
 
   private static int[][] getMockInput()
