@@ -9,7 +9,7 @@ import java.util.HashSet;
 
 /**
  * This problem was probably one of the ones that took longer. I spent alot of time trying
- * to get this to run somewhat fast. In the end, it took ~20 seconds to compute the answer
+ * to get this to run somewhat fast. In the end, it took ~2 seconds to compute the answer
  * (which was about 303B non-reducible improper fractions)
  */
 public class Problem72 {
@@ -31,20 +31,24 @@ public class Problem72 {
   public static long computeFast() {
     long count = 0;
     PrimeCalculator calculator = new PrimeCalculator(CUTOFF);
-    ArrayList<Integer> list = calculator.getListOfPrimes();
     for (int i = 2; i <= CUTOFF; i++) {
       if (i % 10000 == 0) {
         System.out.printf("%d of %d (%.2f percent)%n", i, CUTOFF, (double)i*100/CUTOFF);
       }
-      count+= getTotient(i, list);
+      count+= getTotient(i, calculator);
 
     }
     return count;
   }
 
   private static HashMap<Integer, Integer> computedTotients = new HashMap<>();
-  private static int getTotient(int n, ArrayList<Integer> listOfPrimes)
+  private static int getTotient(int n, PrimeCalculator calc)
   {
+    if (calc.isPrime(n)) {
+      computedTotients.put(n, n-1);
+      return computedTotients.get(n);
+    }
+    ArrayList<Integer> listOfPrimes = calc.getListOfPrimes();
     HashSet<Integer> primeFactors = new HashSet<>();
     int original = n;
     int valueToUseInTotientEquation = n;
