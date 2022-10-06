@@ -9,7 +9,19 @@ import java.util.HashSet;
 
 /**
  * This problem was probably one of the ones that took longer. I spent alot of time trying
- * to get this to run somewhat fast. In the end, it took ~2 seconds to compute the answer
+ * to get this to run somewhat fast. The naive implementation takes too long -- hours maybe?
+ * Not entirely sure. Didn't feel like waiting to find out.
+ *
+ * The optimizations I made were:
+ * - Use Euler's totient function for computing the # of co primes below n. Also cache those computations
+ * for later use
+ * - When finding prime factorizations, only attempt to divide by numbers that are prime
+ * - If we're trying to find the totient of a prime number, short circuit and return n-1 instead of going through
+ * the actual computation. This change alone reduced the running time from 30s to 800ms. This is because computing
+ * attemping to determine the prime factorization of a large prime number takes alot of time.
+ *
+ *
+ * In the end, it took ~800ms to compute the answer
  * (which was about 303B non-reducible improper fractions)
  */
 public class Problem72 {
@@ -30,6 +42,7 @@ public class Problem72 {
   }
   public static long computeFast() {
     long count = 0;
+    long startTime = System.currentTimeMillis();
     PrimeCalculator calculator = new PrimeCalculator(CUTOFF);
     for (int i = 2; i <= CUTOFF; i++) {
       if (i % 10000 == 0) {
@@ -38,10 +51,17 @@ public class Problem72 {
       count+= getTotient(i, calculator);
 
     }
+    long endTime = System.currentTimeMillis();
+    System.out.printf("ElapsedTime: %d%n", endTime-startTime);
     return count;
   }
 
   private static HashMap<Integer, Integer> computedTotients = new HashMap<>();
+
+  /**
+   * Kinda hard to read, but there is alot of optimizations baked in to get the totient function
+   * to return quickly
+   */
   private static int getTotient(int n, PrimeCalculator calc)
   {
     if (calc.isPrime(n)) {
