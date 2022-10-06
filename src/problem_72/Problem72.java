@@ -2,9 +2,16 @@ package problem_72;
 
 import helpers.PrimeCalculator;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * This problem was probably one of the ones that took longer. I spent alot of time trying
+ * to get this to run somewhat fast. In the end, it took ~20 seconds to compute the answer
+ * (which was about 303B non-reducible improper fractions)
+ */
 public class Problem72 {
 
   public static void main(String[] args) {
@@ -13,8 +20,8 @@ public class Problem72 {
     System.out.printf("The answer is %d\n", computeFast());
   }
 
-  //private static int CUTOFF = 1_000_000;
   private static int CUTOFF = 1_000_000;
+  //private static int CUTOFF = 8;
   private static int gcd(int a, int b) {
     if (b == 0) {
       return a;
@@ -22,47 +29,52 @@ public class Problem72 {
     return gcd(b, a %b);
   }
   public static long computeFast() {
-    int count = 0;
+    long count = 0;
     PrimeCalculator calculator = new PrimeCalculator(CUTOFF);
-    ArrayList<Integer> listOfPrimes = calculator.getListOfPrimes();
-    for (int i = 1; i <= CUTOFF; i++) {
+    ArrayList<Integer> list = calculator.getListOfPrimes();
+    for (int i = 2; i <= CUTOFF; i++) {
       if (i % 10000 == 0) {
-        System.out.printf("%d of %d (%.2f percent)%n", i, CUTOFF, (double)i/CUTOFF);
+        System.out.printf("%d of %d (%.2f percent)%n", i, CUTOFF, (double)i*100/CUTOFF);
       }
-      int amountToAdd = 0;
-      if (calculator.isPrime(i)) {
-       amountToAdd = (i-1);
-      } else {
-        amountToAdd += (i-1) - getMultiplesOfPrimeFactorCount(i, listOfPrimes);
-      }
-      count+= amountToAdd;
-      //System.out.printf("adding %d for number %d%n", amountToAdd, i);
+      count+= getTotient(i, list);
 
     }
     return count;
   }
 
-  private static int getMultiplesOfPrimeFactorCount(int n, ArrayList<Integer> listOfPrimes)
+  private static HashMap<Integer, Integer> computedTotients = new HashMap<>();
+  private static int getTotient(int n, ArrayList<Integer> listOfPrimes)
   {
+    HashSet<Integer> primeFactors = new HashSet<>();
     int original = n;
-    HashSet<Integer> mySet = new HashSet<>();
-    for (int i = 0; i < listOfPrimes.size(); i++) {
-      int current = listOfPrimes.get(i);
-      if (current > n) {
+    int valueToUseInTotientEquation = n;
+    int previouslyComputedTotients = 1;
+
+    for (int j = 0; j < listOfPrimes.size(); j++) {
+      if (listOfPrimes.get(j) > n) {
+        //no more values to check. n should be 1
         break;
       }
-      boolean didRun = false;
-      while (n % current == 0) {
-        didRun = true;
-        n /= current;
-      }
-      int k = 1;
-      while (k*current < original && didRun) {
-        mySet.add(k*current);
-        k++;
+    if (computedTotients.containsKey(n)) {
+      //we can short circuit here since totient functions are multiplicative
+      valueToUseInTotientEquation /= n;
+      previouslyComputedTotients*= computedTotients.get(n);
+      break;
+    }
+      while (n % listOfPrimes.get(j) == 0) {
+        primeFactors.add(listOfPrimes.get(j));
+        n /= listOfPrimes.get(j);
       }
     }
-    return mySet.size();
+
+    double val = 1;
+    for (Integer k : primeFactors) {
+      val *= (1-(1/(double)k));
+    }
+    //we can use previously computed totients to shorten our computation
+    //so totient(n*m) = totient(n)*totient(m)
+    computedTotients.put(original, (int)(val*valueToUseInTotientEquation*previouslyComputedTotients));
+    return computedTotients.get(original);
   }
 
   public static long compute() {
@@ -84,6 +96,9 @@ public class Problem72 {
     //If i is not prime, then you need to subtract out the multiples (n-1) -
     int count = 0;
     for (int i = 1; i <= CUTOFF; i++) {
+      if (i % 10000 == 0) {
+        System.out.printf("%d of %d (%.2f percent)%n", i, CUTOFF, (double)i*100/CUTOFF);
+      }
       for (int j = 1; j < i; j++) {
         if (gcd(j,i) != 1) {
           continue;

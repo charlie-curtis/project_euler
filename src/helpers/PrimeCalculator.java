@@ -8,6 +8,7 @@ public class PrimeCalculator {
 
   private int cutoff;
   private boolean[] isPrimeHolder;
+  private ArrayList<Integer> listOfPrimes = new ArrayList<>();
 
   public PrimeCalculator(int cutoff)
   {
@@ -17,13 +18,7 @@ public class PrimeCalculator {
 
   public ArrayList<Integer> getListOfPrimes()
   {
-    ArrayList<Integer> list = new ArrayList<>();
-    for (int i = 2; i < isPrimeHolder.length; i++) {
-      if (isPrimeHolder[i]) {
-        list.add(i);
-      }
-    }
-    return list;
+    return this.listOfPrimes;
   }
 
 
@@ -45,6 +40,12 @@ public class PrimeCalculator {
           isPrimeHolder[i*k] = false;
           k++;
         }
+      }
+    }
+
+    for (int i = 2; i < isPrimeHolder.length; i++) {
+      if (isPrimeHolder[i]) {
+        this.listOfPrimes.add(i);
       }
     }
   }
