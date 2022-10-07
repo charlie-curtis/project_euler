@@ -31,10 +31,9 @@ public class Problem23 {
     return sumOfAllNumbers - sumOfVerifiedNumbers;
   }
 
-  private static void addNumbersToVerifiedSet(List<Integer> abundantNumbers, Set<Integer> verifiedNumbers)
-  {
-    int lastNumber = abundantNumbers.get(abundantNumbers.size()-1);
-    for (Integer numbers: abundantNumbers) {
+  private static void addNumbersToVerifiedSet(List<Integer> abundantNumbers, Set<Integer> verifiedNumbers) {
+    int lastNumber = abundantNumbers.get(abundantNumbers.size() - 1);
+    for (Integer numbers : abundantNumbers) {
       int numberToAdd = numbers + lastNumber;
       if (numberToAdd <= CUTOFF) {
         verifiedNumbers.add(numberToAdd);
@@ -42,17 +41,16 @@ public class Problem23 {
     }
   }
 
-  private static boolean isAbundantNumber(int n)
-  {
+  private static boolean isAbundantNumber(int n) {
     int sum = 1; //1 is a divisor of all numbers
-    for (int i = 2; i<= Math.sqrt(n); i++) {
+    for (int i = 2; i <= Math.sqrt(n); i++) {
       if (n % i == 0) {
         //its a divisor
         if (n / i == i) {
           //its a perfect square
-          sum+=i;
+          sum += i;
         } else {
-          sum += i + (n/i);
+          sum += i + (n / i);
         }
       }
     }

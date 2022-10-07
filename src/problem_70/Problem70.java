@@ -12,11 +12,13 @@ import java.util.HashSet;
  */
 public class Problem70 {
 
+  private static final int CUTOFF = 10_000_000;
+  private static final HashMap<Integer, Integer> computedTotients = new HashMap<>();
+
   public static void main(String[] args) {
     System.out.printf("The answer is %d\n", computeFast());
   }
 
-  private static int CUTOFF = 10_000_000;
   //private static int CUTOFF = 79180;
   public static long computeFast() {
     long startTime = System.currentTimeMillis();
@@ -25,12 +27,12 @@ public class Problem70 {
     int bestIndex = -1;
     for (int i = 2; i <= CUTOFF; i++) {
       if (i % 10000 == 0) {
-        System.out.printf("%d of %d (%.2f percent)%n", i, CUTOFF, (double)i*100/CUTOFF);
+        System.out.printf("%d of %d (%.2f percent)%n", i, CUTOFF, (double) i * 100 / CUTOFF);
       }
 
       int totient = getTotient(i, calculator);
       if (isPermutation(totient, i)) {
-        double ratio = (double)i/totient;
+        double ratio = (double) i / totient;
         if (ratio < minRatio) {
           minRatio = ratio;
           bestIndex = i;
@@ -39,12 +41,11 @@ public class Problem70 {
 
     }
     long endTime = System.currentTimeMillis();
-    System.out.printf("ElapsedTime: %d%n", endTime-startTime);
+    System.out.printf("ElapsedTime: %d%n", endTime - startTime);
     return bestIndex;
   }
 
-  private static boolean isPermutation(int i, int j)
-  {
+  private static boolean isPermutation(int i, int j) {
     ArrayList<Integer> list1 = new ArrayList<>();
     ArrayList<Integer> list2 = new ArrayList<>();
     while (i != 0 && j != 0) {
@@ -67,16 +68,13 @@ public class Problem70 {
     return true;
   }
 
-  private static HashMap<Integer, Integer> computedTotients = new HashMap<>();
-
   /**
    * Kinda hard to read, but there is alot of optimizations baked in to get the totient function
    * to return quickly
    */
-  private static int getTotient(int n, PrimeCalculator calc)
-  {
+  private static int getTotient(int n, PrimeCalculator calc) {
     if (calc.isPrime(n)) {
-      computedTotients.put(n, n-1);
+      computedTotients.put(n, n - 1);
       return computedTotients.get(n);
     }
     ArrayList<Integer> listOfPrimes = calc.getListOfPrimes();
@@ -90,12 +88,12 @@ public class Problem70 {
         //no more values to check. n should be 1
         break;
       }
-    if (computedTotients.containsKey(n)) {
-      //we can short circuit here since totient functions are multiplicative
-      valueToUseInTotientEquation /= n;
-      previouslyComputedTotients*= computedTotients.get(n);
-      break;
-    }
+      if (computedTotients.containsKey(n)) {
+        //we can short circuit here since totient functions are multiplicative
+        valueToUseInTotientEquation /= n;
+        previouslyComputedTotients *= computedTotients.get(n);
+        break;
+      }
       while (n % listOfPrimes.get(j) == 0) {
         primeFactors.add(listOfPrimes.get(j));
         n /= listOfPrimes.get(j);
@@ -104,11 +102,11 @@ public class Problem70 {
 
     double val = 1;
     for (Integer k : primeFactors) {
-      val *= (1-(1/(double)k));
+      val *= (1 - (1 / (double) k));
     }
     //we can use previously computed totients to shorten our computation
     //so totient(n*m) = totient(n)*totient(m)
-    computedTotients.put(original, (int)(val*valueToUseInTotientEquation*previouslyComputedTotients));
+    computedTotients.put(original, (int) (val * valueToUseInTotientEquation * previouslyComputedTotients));
     return computedTotients.get(original);
   }
 }

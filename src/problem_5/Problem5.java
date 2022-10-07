@@ -23,7 +23,7 @@ public class Problem5 {
       for (int current = 0; current < count; current++) {
         consumer.accept(divisor);
       }
-    }).reduce(1, (a,b) -> a*b);
+    }).reduce(1, (a, b) -> a * b);
   }
 
   public static void computeAndStorePrimeFactors(int value, HashMap<Integer, Integer> map) {
@@ -44,19 +44,19 @@ public class Problem5 {
 
 /**
  * Scratch notes to help with algorithm
- // 2 2
- // 3 3
- // 4 2 * 2
- // 5 5
- // 6 3*2
- // 7 7
- // 8 2 * 2 *2
- // 9 3 * 3
- // 10 5 * 2
-
- //, , , 3, , 2,
- // 2, 3, 2, 5, 7, 2, 3,
- // 2, 3, 2, 5, 7,
-
- //2, 3, 2, 5, 7, 2, 3,
+ * // 2 2
+ * // 3 3
+ * // 4 2 * 2
+ * // 5 5
+ * // 6 3*2
+ * // 7 7
+ * // 8 2 * 2 *2
+ * // 9 3 * 3
+ * // 10 5 * 2
+ * <p>
+ * //, , , 3, , 2,
+ * // 2, 3, 2, 5, 7, 2, 3,
+ * // 2, 3, 2, 5, 7,
+ * <p>
+ * //2, 3, 2, 5, 7, 2, 3,
  */

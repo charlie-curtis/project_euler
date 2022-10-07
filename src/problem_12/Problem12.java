@@ -12,7 +12,7 @@ public class Problem12 {
     long sum = 0;
 
     for (int i = 1; true; i++) {
-      sum+= i;
+      sum += i;
       int actualDivisors = getNumberOfDivisors(sum);
       if (actualDivisors % 100 == 0) {
         System.out.printf("Currently at %d divisors%n", actualDivisors);
@@ -30,7 +30,7 @@ public class Problem12 {
     for (int i = 1; i <= Math.sqrt(n); i++) {
       if (n % i == 0) {
         //if it's a perfect square, then incrment divisors by 1. Else increment divisors by 2
-        count += n / i == i ? 1:2;
+        count += n / i == i ? 1 : 2;
       }
     }
     return count;

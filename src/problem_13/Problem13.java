@@ -18,14 +18,12 @@ public class Problem13 {
     return answer.toString().substring(0, 10);
   }
 
-  private static String[] parseInput()
-  {
+  private static String[] parseInput() {
     String input = getInput();
     return input.split("\n");
   }
 
-  private static String getInput()
-  {
+  private static String getInput() {
     return "37107287533902102798797998220837590246510135740250\n" +
       "46376937677490009712648124896970078050417018260538\n" +
       "74324986199524741059474233309513058123726617309629\n" +

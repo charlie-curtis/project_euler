@@ -2,7 +2,7 @@ package problem_4;
 
 public class Problem4 {
 
-  public static void main(String [] args) {
+  public static void main(String[] args) {
 
     //tried 580085. It wasn't right
     System.out.printf("\nThe largest palindrome product is %d\n", getPalindromeProduct());
@@ -15,8 +15,8 @@ public class Problem4 {
     long max = 0;
     for (long i = rangeEnd; i >= rangeBegin; i--) {
       for (long j = i; j >= rangeBegin; j--) {
-        if (isPalindrome(i*j)) {
-          max = Math.max(max, i*j);
+        if (isPalindrome(i * j)) {
+          max = Math.max(max, i * j);
         }
       }
     }

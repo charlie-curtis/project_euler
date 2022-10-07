@@ -16,9 +16,9 @@ public class Problem18 {
     for (int i = 0; i < 15; i++) {
       for (int j = 0; j <= i; j++) {
         int max = input[i][j];
-        if (i-1 >= 0) {
-          max = Math.max(max, input[i][j] + answerHolder[i-1][j]);
-          if (j-1 >= 0) {
+        if (i - 1 >= 0) {
+          max = Math.max(max, input[i][j] + answerHolder[i - 1][j]);
+          if (j - 1 >= 0) {
             max = Math.max(max, input[i][j] + answerHolder[i - 1][j - 1]);
           }
         }
@@ -28,22 +28,20 @@ public class Problem18 {
     return IntStream.of(answerHolder[14]).max().getAsInt();
   }
 
-  private static int[][] getInput()
-  {
+  private static int[][] getInput() {
     int[][] input = new int[15][15];
     String inputString = stringInput();
     String[] line = inputString.split("\\n");
     for (int i = 0; i < input.length; i++) {
       String[] lineArray = line[i].split(" ");
-      for (int j = 0; j<=i; j++) {
+      for (int j = 0; j <= i; j++) {
         input[i][j] = Integer.parseInt(lineArray[j]);
       }
     }
     return input;
   }
 
-  private static String stringInput()
-  {
+  private static String stringInput() {
     return "75\n" +
       "95 64\n" +
       "17 47 82\n" +

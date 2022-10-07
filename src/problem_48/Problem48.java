@@ -1,7 +1,6 @@
 package problem_48;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 public class Problem48 {
 
@@ -22,7 +21,7 @@ public class Problem48 {
 
     char[] chars = answer.toString().toCharArray();
     char[] lastDigits = new char[10];
-    int j = chars.length -1;
+    int j = chars.length - 1;
     for (int i = 9; i >= 0; j--, i--) {
       lastDigits[i] = chars[j];
     }

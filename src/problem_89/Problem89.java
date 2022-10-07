@@ -7,6 +7,10 @@ import java.util.HashMap;
 
 public class Problem89 {
 
+  private static final int[] boundaries = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+  private static final String[] representations = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+  private static final HashMap<String, Integer> map = new HashMap<>();
+
   public static void main(String[] args) {
 
     System.out.printf("The answer is %d\n", compute());
@@ -21,15 +25,12 @@ public class Problem89 {
     return Arrays.stream(romanNumerals).mapToInt(Problem89::getReductionAmount).sum();
   }
 
-  private static int getReductionAmount(String romanNumeral)
-  {
+  private static int getReductionAmount(String romanNumeral) {
     int number = romanToInt(romanNumeral);
     String reducedRomanNumeral = intToRoman(number);
     return romanNumeral.length() - reducedRomanNumeral.length();
   }
 
-  private static int[] boundaries = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
-  private static String[] representations = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
   private static String intToRoman(int num) {
 
     StringBuilder answer = new StringBuilder();
@@ -44,9 +45,7 @@ public class Problem89 {
     return answer.toString();
   }
 
-  private static HashMap<String, Integer> map = new HashMap<>();
-  private static void initializeMap()
-  {
+  private static void initializeMap() {
     map.put("M", 1000);
     map.put("CM", 900);
     map.put("D", 500);

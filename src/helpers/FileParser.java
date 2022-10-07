@@ -8,14 +8,13 @@ import java.util.ArrayList;
 public class FileParser {
 
   String fileName;
-  public FileParser(String fileName)
-  {
+
+  public FileParser(String fileName) {
     this.fileName = fileName;
   }
 
 
-  private BufferedReader tryOpen()
-  {
+  private BufferedReader tryOpen() {
     String filePath = new File(this.fileName).getAbsolutePath();
     BufferedReader br = null;
     try {
@@ -29,8 +28,7 @@ public class FileParser {
     return br;
   }
 
-  private String tryReadline(BufferedReader br)
-  {
+  private String tryReadline(BufferedReader br) {
     try {
       return br.readLine();
     } catch (Exception e) {
@@ -40,8 +38,7 @@ public class FileParser {
     return null;
   }
 
-  public String[] toStringArray()
-  {
+  public String[] toStringArray() {
 
     BufferedReader br = tryOpen();
     ArrayList<String> list = new ArrayList<>();
@@ -52,12 +49,11 @@ public class FileParser {
     return list.toArray(String[]::new);
   }
 
-  public int[][] to2DIntArray()
-  {
+  public int[][] to2DIntArray() {
     int[][] result = null;
     try {
       String filePath = new File(this.fileName).getAbsolutePath();
-      BufferedReader br= new BufferedReader(
+      BufferedReader br = new BufferedReader(
         new FileReader(filePath)
       );
 

@@ -18,7 +18,7 @@ public class Problem40 {
     int numberOfIndexesFound = 0;
     int i = 1;
     while (numberOfIndexesFound != indexesToLookFor.size()) {
-      int digitsToAdd = (int)Math.log10(i) + 1;
+      int digitsToAdd = (int) Math.log10(i) + 1;
       for (int j = 0; j < digitsToAdd; j++) {
         currentIndex++;
         if (indexesToLookFor.contains(currentIndex)) {

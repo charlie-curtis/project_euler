@@ -2,7 +2,6 @@ package problem_45;
 
 import java.math.BigInteger;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class Problem45 {
@@ -22,9 +21,9 @@ public class Problem45 {
     HashSet<BigInteger> s2 = new HashSet<>();
     HashSet<BigInteger> s3 = new HashSet<>();
     for (long n = 0; n < cutoff; n++) {
-      s1.add(BigInteger.valueOf(n*(n+1)/2));
-      s2.add(BigInteger.valueOf(n*(3*n-1)/2));
-      s3.add(BigInteger.valueOf(n*(2*n-1)));
+      s1.add(BigInteger.valueOf(n * (n + 1) / 2));
+      s2.add(BigInteger.valueOf(n * (3 * n - 1) / 2));
+      s3.add(BigInteger.valueOf(n * (2 * n - 1)));
     }
 
     return s1.stream()

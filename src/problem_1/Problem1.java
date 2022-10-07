@@ -1,11 +1,8 @@
 package problem_1;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class Problem1 {
 
-  public static void main(String [] args) {
+  public static void main(String[] args) {
 
     int number = 1000;
     System.out.printf("The sum of the multiples of 3 or 5 that are less than %d is %d%n", number, findMultiples(number));
@@ -25,11 +22,11 @@ public class Problem1 {
 
   public static int findMultiplesFast(int number) {
     int sum = 0;
-    for (int value = 3, k = 1; value < number; k++, value=3*k) {
-      sum+=value;
+    for (int value = 3, k = 1; value < number; k++, value = 3 * k) {
+      sum += value;
     }
 
-    for (int value = 5, k = 1; value < number; k++, value=5*k) {
+    for (int value = 5, k = 1; value < number; k++, value = 5 * k) {
       //don't double count
       sum += (value % 3 == 0) ? 0 : value;
     }

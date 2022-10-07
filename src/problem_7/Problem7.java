@@ -28,7 +28,7 @@ public class Problem7 {
       i++;
     }
 
-    return primes.get(cutoff-1);
+    return primes.get(cutoff - 1);
   }
 
 }

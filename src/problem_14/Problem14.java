@@ -6,6 +6,7 @@ import java.util.HashMap;
 public class Problem14 {
 
   private static HashMap<Long, Integer> map;
+
   public static void main(String[] args) {
     System.out.printf("The answer is %d\n", compute());
   }
@@ -27,6 +28,7 @@ public class Problem14 {
     System.out.printf("found %d to have the longest chain of %d%n", indexOfMax, maxSequence);
     return (int) indexOfMax;
   }
+
   private static int getLongestSequenceForNumber(long num) {
     if (num <= 0) {
       throw new RuntimeException("0 is not a valid input");
@@ -38,7 +40,7 @@ public class Problem14 {
     if (num == 1) {
       value = 1;
     } else {
-      long prev = num % 2 == 0 ? num/2 : 3*num + 1;
+      long prev = num % 2 == 0 ? num / 2 : 3 * num + 1;
       value = 1 + getLongestSequenceForNumber(prev);
     }
     map.put(num, value);

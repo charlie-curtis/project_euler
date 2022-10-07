@@ -13,7 +13,7 @@ public class Problem6 {
     long endRange = 100;
 
     long squareOfSums = (long) Math.pow(LongStream.range(1, endRange + 1).sum(), 2);
-    long sumOfSquares = LongStream.range(1, endRange + 1).map(val -> val*val).sum();
+    long sumOfSquares = LongStream.range(1, endRange + 1).map(val -> val * val).sum();
 
     return Math.abs(sumOfSquares - squareOfSums);
   }

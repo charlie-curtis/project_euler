@@ -11,14 +11,14 @@ public class Problem10 {
 
   public static long compute() {
     int primeCutoff = 2_000_000;
-    boolean[] isPrime = new boolean[primeCutoff+1];
+    boolean[] isPrime = new boolean[primeCutoff + 1];
     Arrays.fill(isPrime, true);
     long sum = 0;
     for (int i = 2; i < primeCutoff; i++) {
       if (isPrime[i]) {
-        sum+= i;
-        for (int j = 2; i*j < primeCutoff; j++) {
-          isPrime[i*j] = false;
+        sum += i;
+        for (int j = 2; i * j < primeCutoff; j++) {
+          isPrime[i * j] = false;
         }
       }
     }

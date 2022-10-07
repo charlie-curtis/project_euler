@@ -12,18 +12,17 @@ public class Problem36 {
     int answer = 0;
     for (int i = 1; i < cutoff; i++) {
       if (isPalindromeForBase(i, 10) && isPalindromeForBase(i, 2)) {
-        answer+= i;
+        answer += i;
       }
     }
     return answer;
   }
 
-  private static boolean isPalindromeForBase(int n, int base)
-  {
+  private static boolean isPalindromeForBase(int n, int base) {
     int original = n;
     int reverse = 0;
     while (n != 0) {
-      reverse = reverse*base + n % base;
+      reverse = reverse * base + n % base;
       n /= base;
     }
     return reverse == original;

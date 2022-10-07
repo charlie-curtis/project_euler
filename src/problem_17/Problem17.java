@@ -5,6 +5,7 @@ import java.util.HashMap;
 public class Problem17 {
 
   private static HashMap<Integer, String> map;
+
   public static void main(String[] args) {
     map = getMap();
     System.out.printf("The answer is %d\n", compute());
@@ -15,14 +16,13 @@ public class Problem17 {
     int cutoff = 1000;
     int sum = 0;
     for (int i = 1; i <= 1000; i++) {
-      sum+= printNumber(i).replaceAll("\\s", "").length();
+      sum += printNumber(i).replaceAll("\\s", "").length();
       System.out.printf("%s%n", printNumber(i));
     }
     return sum;
   }
 
-  private static String printNumber(int number)
-  {
+  private static String printNumber(int number) {
     if (number % 10 == 0 && number < 100) {
       //special number
       return map.get(number);
@@ -39,28 +39,28 @@ public class Problem17 {
 
     String response = "";
     int val = number;
-    if (val<=99) {
+    if (val <= 99) {
       //number is between 21 and 999
       int msb = val / 10;
       int lsb = val % 10;
       response = (map.get(msb * 10));
       String remaining = printNumber(lsb);
       if (remaining != null) {
-        response +=  " " + remaining;
+        response += " " + remaining;
       }
     } else {
       int msb = val / 100;
       response = map.get(msb) + " hundred";
-      String remaining = printNumber(number - msb*100);
+      String remaining = printNumber(number - msb * 100);
       if (remaining != null) {
-        response +=  " and " + remaining;
+        response += " and " + remaining;
       }
 
     }
     return response;
   }
-  private static HashMap<Integer, String> getMap()
-  {
+
+  private static HashMap<Integer, String> getMap() {
     HashMap<Integer, String> map = new HashMap<>();
     map.put(1, "one");
     map.put(2, "two");

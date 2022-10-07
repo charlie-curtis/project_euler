@@ -25,8 +25,7 @@ public class Problem21 {
     return answer;
   }
 
-  private static int getSumOfDivisors(int n)
-  {
+  private static int getSumOfDivisors(int n) {
     //start with sum = 1 and i = 2 so that we only count proper divisors (i.e. don't include n)
     int sum = 1;
     for (int i = 2; i <= Math.sqrt(n); i++) {

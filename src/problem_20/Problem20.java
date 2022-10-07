@@ -15,7 +15,7 @@ public class Problem20 {
 
   public static long compute() {
 
-    List<Integer> list =  IntStream.range(1, 101).boxed().collect(Collectors.toList());
+    List<Integer> list = IntStream.range(1, 101).boxed().collect(Collectors.toList());
 
     BigInteger result = list.stream().map(BigInteger::valueOf).reduce(BigInteger.valueOf(1), (a, b) -> a.multiply(b));
 

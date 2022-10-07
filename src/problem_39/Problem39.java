@@ -7,8 +7,7 @@ public class Problem39 {
     System.out.printf("The answer is %d\n", compute());
   }
 
-  private static int findMaxSolutions(int desiredPerimeter)
-  {
+  private static int findMaxSolutions(int desiredPerimeter) {
     int count = 0;
     for (int i = 1; i <= desiredPerimeter; i++) {
       for (int j = 1; j <= desiredPerimeter; j++) {
@@ -22,8 +21,7 @@ public class Problem39 {
     return count;
   }
 
-  private static boolean doSidesSatisfyConstraints(double a, double b, double c)
-  {
+  private static boolean doSidesSatisfyConstraints(double a, double b, double c) {
     if (a <= 0 || b <= 0 || c <= 0) {
       return false;
     }

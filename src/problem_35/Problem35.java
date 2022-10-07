@@ -5,6 +5,8 @@ import java.util.HashSet;
 
 public class Problem35 {
 
+  private static final HashSet<Integer> set = new HashSet<>();
+
   public static void main(String[] args) {
 
     System.out.printf("The answer is %d\n", compute());
@@ -15,18 +17,16 @@ public class Problem35 {
     int cutoff = 1_000_000;
     int count = 0;
     computePrimesBelowValue(cutoff);
-    for (int i = 2; i< cutoff; i++) {
-      if (isCircularPrime(i)){
+    for (int i = 2; i < cutoff; i++) {
+      if (isCircularPrime(i)) {
         count++;
       }
     }
     return count;
   }
 
-  private static HashSet<Integer> set = new HashSet<>();
-  private static void computePrimesBelowValue(int n)
-  {
-    boolean[] primeHolder = new boolean[n+1];
+  private static void computePrimesBelowValue(int n) {
+    boolean[] primeHolder = new boolean[n + 1];
     Arrays.fill(primeHolder, true);
 
     for (int i = 2; i < primeHolder.length; i++) {
@@ -36,7 +36,7 @@ public class Problem35 {
       set.add(i);
       int k = 2;
       while (i * k < primeHolder.length) {
-        primeHolder[i*k] = false;
+        primeHolder[i * k] = false;
         k++;
       }
     }
@@ -44,8 +44,8 @@ public class Problem35 {
     //set.forEach(System.out::println);
     //System.out.printf("There are %d primes below %d%n", set.size(), n);
   }
-  private static boolean isCircularPrime(int n)
-  {
+
+  private static boolean isCircularPrime(int n) {
     int shiftedNumber = n;
     do {
       if (!set.contains(shiftedNumber)) {
@@ -59,8 +59,7 @@ public class Problem35 {
     return true;
   }
 
-  private static int shiftNumber(int n)
-  {
+  private static int shiftNumber(int n) {
     int multiplier = 1;
     while (multiplier < n) {
       multiplier *= 10;
@@ -68,6 +67,6 @@ public class Problem35 {
     multiplier /= 10;
     int lastDigit = n % 10;
     n = n / 10;
-    return lastDigit*multiplier + n;
+    return lastDigit * multiplier + n;
   }
 }

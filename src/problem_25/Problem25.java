@@ -22,11 +22,10 @@ public class Problem25 {
       i++;
     }
     //to get the fib index, take i and add 2
-    return i+2;
+    return i + 2;
   }
 
-  private static boolean shouldTerminateLoop(BigInteger f2)
-  {
+  private static boolean shouldTerminateLoop(BigInteger f2) {
     return (f2.toString().length() >= 1000);
   }
 }

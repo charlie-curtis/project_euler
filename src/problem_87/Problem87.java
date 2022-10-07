@@ -3,7 +3,6 @@ package problem_87;
 import helpers.PrimeCalculator;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class Problem87 {
@@ -24,22 +23,22 @@ public class Problem87 {
     int iterationCutoff = 8000; //sqrt (50M)
     PrimeCalculator calculator = new PrimeCalculator(cutoff);
     for (long i = 2; i < iterationCutoff; i++) {
-      if (!calculator.isPrime((int)i)) {
+      if (!calculator.isPrime((int) i)) {
         continue;
       }
       for (long j = 2; j < iterationCutoff; j++) {
-          if (!calculator.isPrime((int)j)) {
-            continue;
-          }
+        if (!calculator.isPrime((int) j)) {
+          continue;
+        }
         for (long k = 2; k < iterationCutoff; k++) {
-          if (!calculator.isPrime((int)k)) {
+          if (!calculator.isPrime((int) k)) {
             continue;
           }
-          long result = i*i + j*j*j + k*k*k*k;
+          long result = i * i + j * j * j + k * k * k * k;
           if (result >= cutoff) {
             break;
           }
-          answerHolder.add((int)result);
+          answerHolder.add((int) result);
         }
       }
     }

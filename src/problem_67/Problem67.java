@@ -4,12 +4,13 @@ import java.util.stream.IntStream;
 
 public class Problem67 {
 
+  private static final int CUTOFF = 100;
+
   public static void main(String[] args) {
 
     System.out.printf("The answer is %d%n", compute());
   }
 
-  private static int CUTOFF = 100;
   public static long compute() {
     int[][] input = getInput();
     int[][] answerHolder = new int[CUTOFF][CUTOFF];
@@ -17,34 +18,32 @@ public class Problem67 {
     for (int i = 0; i < CUTOFF; i++) {
       for (int j = 0; j <= i; j++) {
         int max = input[i][j];
-        if (i-1 >= 0) {
-          max = Math.max(max, input[i][j] + answerHolder[i-1][j]);
-          if (j-1 >= 0) {
+        if (i - 1 >= 0) {
+          max = Math.max(max, input[i][j] + answerHolder[i - 1][j]);
+          if (j - 1 >= 0) {
             max = Math.max(max, input[i][j] + answerHolder[i - 1][j - 1]);
           }
         }
         answerHolder[i][j] = max;
       }
     }
-    return IntStream.of(answerHolder[CUTOFF-1]).max().getAsInt();
+    return IntStream.of(answerHolder[CUTOFF - 1]).max().getAsInt();
   }
 
-  private static int[][] getInput()
-  {
+  private static int[][] getInput() {
     int[][] input = new int[CUTOFF][CUTOFF];
     String inputString = stringInput();
     String[] line = inputString.split("\\n");
     for (int i = 0; i < input.length; i++) {
       String[] lineArray = line[i].split(" ");
-      for (int j = 0; j<=i; j++) {
+      for (int j = 0; j <= i; j++) {
         input[i][j] = Integer.parseInt(lineArray[j]);
       }
     }
     return input;
   }
 
-  private static String stringInput()
-  {
+  private static String stringInput() {
     return "59\n" +
       "73 41\n" +
       "52 40 09\n" +

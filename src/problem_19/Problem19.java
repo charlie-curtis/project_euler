@@ -6,6 +6,7 @@ public class Problem19 {
 
   private static HashMap<Integer, String> daysOfWeek;
   private static HashMap<Integer, Integer> monthToDayCount;
+
   public static void main(String[] args) {
 
     initialize();
@@ -29,7 +30,7 @@ public class Problem19 {
 
         int daysInMonth = monthToDayCount.get(j);
         if (j == 2 && isLeapYear(i)) {
-          daysInMonth = monthToDayCount.get(j)+1;
+          daysInMonth = monthToDayCount.get(j) + 1;
         }
         daysSinceFirstTuesday += daysInMonth;
       }
@@ -38,8 +39,7 @@ public class Problem19 {
     return answer;
   }
 
-  private static void initialize()
-  {
+  private static void initialize() {
     daysOfWeek = new HashMap<>();
     daysOfWeek.put(0, "Tuesday");
     daysOfWeek.put(1, "Wednesday");

@@ -17,21 +17,21 @@ public class Problem11 {
     int max = 0;
     for (int i = 0; i < GRID_SIZE; i++) {
       for (int j = 0; j < GRID_SIZE; j++) {
-        if ((i+3) < GRID_SIZE) {
+        if ((i + 3) < GRID_SIZE) {
           //check down
-          max = Math.max(max, grid[i][j] * grid[i+1][j] * grid[i+2][j] * grid[i+3][j]);
+          max = Math.max(max, grid[i][j] * grid[i + 1][j] * grid[i + 2][j] * grid[i + 3][j]);
 
         }
         if ((j + 3) < GRID_SIZE) {
           //check right
-          max = Math.max(max, grid[i][j] * grid[i][j+1] * grid[i][j+2] * grid[i][j+3]);
+          max = Math.max(max, grid[i][j] * grid[i][j + 1] * grid[i][j + 2] * grid[i][j + 3]);
         }
         if ((j + 3) < GRID_SIZE && (i + 3) < GRID_SIZE) {
           //check diagonal right
-          max = Math.max(max, grid[i][j] * grid[i+1][j+1] * grid[i+2][j+2] * grid[i+3][j+3]);
+          max = Math.max(max, grid[i][j] * grid[i + 1][j + 1] * grid[i + 2][j + 2] * grid[i + 3][j + 3]);
         }
-        if (i + 3 < GRID_SIZE && j -3 >= 0) {
-          max = Math.max(max, grid[i][j] * grid[i+1][j-1] * grid[i+2][j-2] * grid[i+3][j-3]);
+        if (i + 3 < GRID_SIZE && j - 3 >= 0) {
+          max = Math.max(max, grid[i][j] * grid[i + 1][j - 1] * grid[i + 2][j - 2] * grid[i + 3][j - 3]);
         }
       }
 
@@ -39,8 +39,7 @@ public class Problem11 {
     return max;
   }
 
-  private static int[][] parseInput()
-  {
+  private static int[][] parseInput() {
     String input = getInput();
     String[] stringArray = input.split(" ");
     Iterator it = Arrays.stream(stringArray).iterator();
@@ -58,8 +57,7 @@ public class Problem11 {
     return grid;
   }
 
-  private static String getInput()
-  {
+  private static String getInput() {
     return "08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08 " +
       "49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00 " +
       "81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65 " +

@@ -3,8 +3,9 @@ package problem_3;
 public class Problem3 {
 
   public static final long TARGET_VALUE = 600_851_475_143L;
+
   //public static final long TARGET_VALUE = 13195;
-  public static void main(String [] args) {
+  public static void main(String[] args) {
 
     System.out.printf("\nThe largest prime factor of %d is %d\n", TARGET_VALUE, getLargestPrimeFactor());
   }

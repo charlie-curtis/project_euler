@@ -7,6 +7,11 @@ import java.math.BigInteger;
  */
 public class Problem30 {
 
+  //I didn't know what the upperbound was, so I just pragmatically picked some upperbound.
+  //I guess the idea is that at some high value of n, it becomes impossible for the sum of the factorials to compete
+  // with the # of digits in n. Take 5555555 as an example. The sum of the factorials is only 600
+  private static final int CUTOFF = 1_000_000;
+
   public static void main(String[] args) {
 
     System.out.printf("The answer is %d\n", compute());
@@ -29,11 +34,6 @@ public class Problem30 {
     }
     return answer;
   }
-
-  //I didn't know what the upperbound was, so I just pragmatically picked some upperbound.
-  //I guess the idea is that at some high value of n, it becomes impossible for the sum of the factorials to compete
-  // with the # of digits in n. Take 5555555 as an example. The sum of the factorials is only 600
-  private static int CUTOFF = 1_000_000;
 
   private static long raiseToFifthPower(int n) {
     long result = 1;

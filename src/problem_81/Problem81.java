@@ -15,17 +15,17 @@ public class Problem81 {
     int[][] input = parser.to2DIntArray();
     int[][] holder = new int[cutoff][cutoff];
 
-    holder[cutoff-1][cutoff-1] = input[cutoff-1][cutoff-1];
+    holder[cutoff - 1][cutoff - 1] = input[cutoff - 1][cutoff - 1];
     for (int j = holder.length - 2; j >= 0; j--) {
-      holder[holder.length-1][j] = input[holder.length-1][j] + holder[holder.length-1][j+1];
+      holder[holder.length - 1][j] = input[holder.length - 1][j] + holder[holder.length - 1][j + 1];
     }
     for (int i = holder.length - 2; i >= 0; i--) {
-      holder[i][holder.length-1] = input[i][holder.length-1] + holder[i+1][holder.length-1];
+      holder[i][holder.length - 1] = input[i][holder.length - 1] + holder[i + 1][holder.length - 1];
     }
 
-    for (int i = holder.length - 2; i >=0; i--) {
-      for (int j = holder.length - 2; j>=0; j--) {
-        holder[i][j] = input[i][j] + Math.min(holder[i][j+1], holder[i+1][j]);
+    for (int i = holder.length - 2; i >= 0; i--) {
+      for (int j = holder.length - 2; j >= 0; j--) {
+        holder[i][j] = input[i][j] + Math.min(holder[i][j + 1], holder[i + 1][j]);
       }
     }
 

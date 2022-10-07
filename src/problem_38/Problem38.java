@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 public class Problem38 {
 
+  private static final int desiredHash = "123456789".hashCode();
+
   public static void main(String[] args) {
 
     System.out.printf("The answer is %d\n", compute());
@@ -19,8 +21,7 @@ public class Problem38 {
     return largestPanFound;
   }
 
-  private static long computeMaxPan(int n)
-  {
+  private static long computeMaxPan(int n) {
     long maxPossibleValue = 987654321;
     long maxPan = Long.MIN_VALUE;
 
@@ -37,18 +38,15 @@ public class Problem38 {
     return maxPan;
   }
 
-  private static String computeAndConcat(int number, int k)
-  {
+  private static String computeAndConcat(int number, int k) {
     StringBuffer sb = new StringBuffer();
     for (int i = 1; i <= k; i++) {
-      sb.append(number*i);
+      sb.append(number * i);
     }
     return sb.toString();
   }
 
-  private static final int desiredHash = "123456789".hashCode();
-  private static boolean isPanDigitalNumber(long n)
-  {
+  private static boolean isPanDigitalNumber(long n) {
     String s = Arrays.stream(String.valueOf(n).split("")).sorted().collect(Collectors.joining());
     return (s.hashCode() == desiredHash);
   }

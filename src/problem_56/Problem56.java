@@ -17,7 +17,7 @@ public class Problem56 {
       for (int j = 1; j <= 100; j++) {
         BigInteger number = BigInteger.valueOf(i).pow(j);
         int digitalSum = Arrays.stream(number.toString().split("")).mapToInt(Integer::parseInt).sum();
-        maxDigitalSum =Math.max(maxDigitalSum, digitalSum);
+        maxDigitalSum = Math.max(maxDigitalSum, digitalSum);
       }
     }
     return maxDigitalSum;

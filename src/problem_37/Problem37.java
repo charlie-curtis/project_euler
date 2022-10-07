@@ -4,12 +4,14 @@ import java.util.Arrays;
 
 public class Problem37 {
 
+  private static final int cutoff = 1_000_000;
+  private static final boolean[] primes = new boolean[cutoff];
+
   public static void main(String[] args) {
 
     System.out.printf("The answer is %d\n", compute());
   }
 
-  private static int cutoff = 1_000_000;
   public static long compute() {
     System.out.printf("Checking the primes that are less than %d%n", cutoff);
 
@@ -20,7 +22,7 @@ public class Problem37 {
     for (int i = 10; i < cutoff; i++) {
       if (isTruncatablePrime(i)) {
         //System.out.printf("%d is truncatable%n", i);
-        sum+=i;
+        sum += i;
         found++;
       }
 
@@ -29,8 +31,7 @@ public class Problem37 {
     return sum;
   }
 
-  private static boolean isTruncatablePrime(int n)
-  {
+  private static boolean isTruncatablePrime(int n) {
     int multiplier = 1;
     while (multiplier < n) {
       multiplier *= 10;
@@ -63,21 +64,19 @@ public class Problem37 {
     return true;
   }
 
-  private static boolean isPrime(int n)
-  {
+  private static boolean isPrime(int n) {
     boolean result = primes[n];
     return result;
   }
-  private static boolean[] primes = new boolean[cutoff];
-  private static void computePrimes()
-  {
+
+  private static void computePrimes() {
     Arrays.fill(primes, true);
     primes[1] = false;
     for (int i = 2; i < cutoff; i++) {
       if (primes[i]) {
         int k = 2;
-        while (k*i < cutoff) {
-          primes[k*i] = false;
+        while (k * i < cutoff) {
+          primes[k * i] = false;
           k++;
         }
       }
