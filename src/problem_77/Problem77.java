@@ -70,18 +70,12 @@ public class Problem77 {
       return 0;
     }
 
-    //I can either use the current number of i 0, 1, 2, or n times
-
     //this is the case where we don't use this number at all
     int sum = getCombinations(n, index+1);
 
-    int numberRemaining = n;
     int prime = primes.get(index);
-    while (numberRemaining >= prime) {
-      //this handles the case where we use this prime number n times in the answer
-      sum+= getCombinations(numberRemaining - prime, index+1);
-      numberRemaining-= prime;
-    }
+    //this handles the case where we use this prime number 1 or more times
+    sum+= getCombinations(n - prime, index);
     memo.put(entry, sum);
     return sum;
   }
