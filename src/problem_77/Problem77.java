@@ -1,5 +1,6 @@
 package problem_77;
 
+import helpers.Pair;
 import helpers.PrimeCalculator;
 
 import java.util.AbstractMap;
@@ -29,11 +30,7 @@ public class Problem77 {
   private static int LOOKING_FOR = 5000;
   private static List<Integer> primes;
 
-  //Using SimpleEntry here is messy. You can see what happens when we try to filter. Honestly this
-  //is one of the downsides of using java. I want to be able to create a map where the key is a
-  //user defined class and the value is a number. I can do that by creating my own private class,
-  //but then I need to implement extra boilerplate code (i.e. compareTo, hashCode, equals)
-  private static HashMap<AbstractMap.SimpleEntry<Integer, Integer>, Integer> memo = new HashMap<>();
+  private static HashMap<Pair<Integer, Integer>, Integer> memo = new HashMap<>();
   public static long compute() {
     PrimeCalculator calculator = new PrimeCalculator(CUTOFF);
     primes = calculator.getListOfPrimes().stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
@@ -45,13 +42,13 @@ public class Problem77 {
     //the first value of n and return it.
     Optional<Integer> answer = memo.entrySet().stream()
         .map(entry -> {
-      if (calculator.isPrime(entry.getKey().getKey())) {
+      if (calculator.isPrime(entry.getKey().first)) {
         entry.setValue(entry.getValue() - 1);
       }
       return entry;
     }).filter((entry) -> entry.getValue() >= LOOKING_FOR)
       .sorted((entryA, entryB) -> entryA.getKey().getKey().compareTo(entryB.getKey().getKey()))
-      .map((entry) -> entry.getKey().getKey())
+      .map((entry) -> entry.getKey().first)
       .findFirst();
 
     return answer.orElse(-1);
@@ -59,9 +56,9 @@ public class Problem77 {
 
   private static int getCombinations(int n, int index)
   {
-    AbstractMap.SimpleEntry<Integer, Integer> entry = new AbstractMap.SimpleEntry<>(n, index);
-    if (memo.containsKey(entry)) {
-      return memo.get(entry);
+    Pair<Integer, Integer> pair = new Pair<>(n, index);
+    if (memo.containsKey(pair)) {
+      return memo.get(pair);
     }
     if (n == 0) {
       return 1;
@@ -76,7 +73,7 @@ public class Problem77 {
     int prime = primes.get(index);
     //this handles the case where we use this prime number 1 or more times
     sum+= getCombinations(n - prime, index);
-    memo.put(entry, sum);
+    memo.put(pair, sum);
     return sum;
   }
 }
