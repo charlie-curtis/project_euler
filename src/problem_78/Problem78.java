@@ -16,43 +16,56 @@ public class Problem78 {
     System.out.printf("The answer is %d\n", compute());
   }
 
-  private static int CUTOFF = 4000;
+  //private static int CUTOFF = 4000;
+  private static int CUTOFF = 10_000;
 
   private static int LOOKING_FOR = 1_000_000;
 
   private static HashMap<AbstractMap.SimpleEntry<Integer, Integer>, Integer> memo = new HashMap<>();
   public static long compute() {
-    getCombinations(CUTOFF, 1);
 
+    long[][] map = bottomUpMap(CUTOFF);
 
-    Optional<Integer> answer = memo.entrySet().stream()
-      .filter((entry) -> entry.getValue() % LOOKING_FOR == 0)
-      .sorted((entryA, entryB) -> entryA.getKey().getKey().compareTo(entryB.getKey().getKey()))
-      .map((entry) -> entry.getKey().getKey())
-      .findFirst();
-
-    return answer.orElse(-1);
+    int answer = 0;
+    for (int i = 1; i < map.length; i++) {
+      if (map[i][i] % LOOKING_FOR == 0) {
+       answer = i;
+       break;
+      }
+    }
+    return answer;
   }
 
-  private static int getCombinations(int n, int valueToConsider)
+  private static long[][] bottomUpMap(int n)
   {
-    AbstractMap.SimpleEntry<Integer, Integer> entry = new AbstractMap.SimpleEntry<>(n, valueToConsider);
-    if (memo.containsKey(entry)) {
-      return memo.get(entry);
-    }
-    if (n == 0 || valueToConsider == n) {
-      return 1;
-    }
-    if (n <= 0 || valueToConsider > n) {
-      return 0;
+    //row is n
+    //col is valueToConsider
+    long[][] dp = new long[n+1][n+1];
+
+    for (int j = 0; j< dp.length; j++) {
+      dp[0][j] = 1;
     }
 
 
-    int sum = getCombinations()
-    int sum = getCombinations(n, valueToConsider+1)
-      + getCombinations(n-valueToConsider, valueToConsider);
-    //System.out.printf("putting %d for %d%n", sum, n);
-    memo.put(entry, sum);
-    return sum;
+    for (int i = 1; i <= n; i++) {
+      for (int j = 1; j<=n; j++) {
+
+        //This will be the sum if we don't use this value at
+        //all in our answer. So for example, if value = 3, and n = 10,
+        //this will count all the scenarios where we add to 10 without
+        //using a 3 (i.e. 5+2+1+1+1 is one such example)
+        long sum = dp[i][j-1];
+
+        //if we use value once, it looks like
+        //dp[n-i][j-1]
+        //if we use it twice, it looks like dp[n-2*i][j-1]
+        for (int k = 1; k*j <= i; k++) {
+          sum += dp[i-k*j][j-1];
+        }
+
+        dp[i][j] = sum;
+      }
+    }
+    return dp;
   }
 }
