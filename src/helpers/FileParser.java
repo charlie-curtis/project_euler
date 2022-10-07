@@ -3,6 +3,7 @@ package helpers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 
 public class FileParser {
 
@@ -28,11 +29,27 @@ public class FileParser {
     return br;
   }
 
-  public String[] toStringArray() throws Exception
+  private String tryReadline(BufferedReader br)
+  {
+    try {
+      return br.readLine();
+    } catch (Exception e) {
+      System.out.println("COULDN'T READ INPUT " + e.getMessage());
+      System.exit(1);
+    }
+    return null;
+  }
+
+  public String[] toStringArray()
   {
 
     BufferedReader br = tryOpen();
-    return br.readLine().replaceAll("\"","").split(",");
+    ArrayList<String> list = new ArrayList<>();
+    String line;
+    while ((line = tryReadline(br)) != null) {
+      list.add(line);
+    }
+    return list.toArray(String[]::new);
   }
 
   public int[][] to2DIntArray()
