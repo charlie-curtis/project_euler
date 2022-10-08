@@ -24,18 +24,20 @@ class HandCalculator implements Comparable {
   }
 
   private void computeHand() {
+
+    this.kickers = new ArrayList<>(this.cards.stream().sorted(Comparator.reverseOrder()).toList());
     if (checkIfRoyalFlush()) {
-      return;
+      this.result = HandConstants.ROYAL_FLUSH;
     } else if (isStraightFlush()) {
       this.result = HandConstants.STRAIGHT_FLUSH;
-    } else if (checkIfFourOfAKind()) {
+    } else if (isFourOfAKind()) {
+      this.result = HandConstants.FOUR_OF_A_KIND;
       return;
     } else if (checkIfFullHouse()) {
+      this.result = HandConstants.FULL_HOUSE;
       return;
     } else if (isFlush()) {
-      this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
       result = HandConstants.FLUSH;
-      return;
     } else if (checkIfStraight()) {
       return;
     } else if (checkIfThreeOfAKind()) {
@@ -45,9 +47,19 @@ class HandCalculator implements Comparable {
     } else if (checkIfOnePair()) {
       return;
     } else {
-      checkIfHighCard();
+      this.result = HandConstants.HIGH_CARD;
     }
 
+
+
+  }
+
+  private void arrangeKickers()
+  {
+    if (this.result == HandConstants.FOUR_OF_A_KIND) {
+
+    } else {
+    }
   }
 
   private boolean isFlush() {
@@ -63,22 +75,20 @@ class HandCalculator implements Comparable {
       map.put(i.value, ++count);
     });
 
-    for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-      if (entry.getValue() == 3 && map.size() == 2) {
-        this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
-        this.result = HandConstants.FULL_HOUSE;
-        return true;
-      }
+    Map.Entry<Character, Integer> mostCommon = map.entrySet().stream().max(Map.Entry.comparingByKey()).get();
+
+    if (mostCommon.getValue() != 3 || map.size() != 2) {
+      return false;
+
     }
-    return false;
-  }
 
+    this.kickers = this.cards.stream().sorted((cardA, cardB) -> {
+      if (cardA.value == cardB.value) return 0;
+      if (cardA.value == mostCommon.getKey()) return -1;
+      if (cardB.value == mostCommon.getKey()) return 1;
 
-  private boolean checkIfHighCard() {
-    HashMap<Character, Integer> map = new HashMap<>();
-
-    this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
-    this.result = HandConstants.HIGH_CARD;
+      return cardA.value > cardB.value ? -1: 1;
+    }).toList();
     return true;
   }
 
@@ -172,7 +182,7 @@ class HandCalculator implements Comparable {
     return false;
   }
 
-  private boolean checkIfFourOfAKind() {
+  private boolean isFourOfAKind() {
     HashMap<Character, Integer> map = new HashMap<>();
 
     this.cards.forEach(card -> {
@@ -181,24 +191,19 @@ class HandCalculator implements Comparable {
       map.put(card.value, count);
     });
 
-    for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-      if (entry.getValue() == 4) {
-        List<Card> highToLow = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
-        List<Card> remainingCards = new ArrayList<>();
-        for (int i = 0; i < highToLow.size(); i++) {
-          Card card = highToLow.get(i);
-          if (map.get(card.value) == 4) {
-            kickers.add(card);
-          } else {
-            remainingCards.add(card);
-          }
-        }
-        kickers.addAll(remainingCards);
-        this.result = HandConstants.FOUR_OF_A_KIND;
-        return true;
-      }
+    Map.Entry<Character, Integer> mostCommon = map.entrySet().stream().max(Map.Entry.comparingByValue()).get();
+    if (mostCommon.getValue() != 4) {
+      return false;
     }
-    return false;
+    kickers = this.cards.stream().sorted((cardA, cardB) -> {
+      if (cardA.value == cardB.value) return 0;
+      if (cardA.value == mostCommon.getKey()) return -1;
+      if (cardB.value == mostCommon.getKey()) return 1;
+
+      return cardA.value > cardB.value ? -1: 1;
+
+    }).toList();
+    return true;
   }
 
   private boolean checkIfStraight() {
@@ -252,20 +257,13 @@ class HandCalculator implements Comparable {
   }
 
   private boolean checkIfRoyalFlush() {
+    if (!isFlush()) {
+      return false;
+    }
     Set<Character> lookingFor = new HashSet<>(Set.of('A', 'K', 'J', 'Q', 'T'));
-    Set<Character> suitesFound = new HashSet<>();
-    for (int i = 0; i < this.cards.size(); i++) {
-      Card card = this.cards.get(i);
-      lookingFor.remove(card.value);
-      suitesFound.add(card.suit);
-    }
+    this.cards.forEach(card -> lookingFor.remove(card.value));
 
-    if (lookingFor.size() == 0 && suitesFound.size() == 1) {
-      this.result = HandConstants.ROYAL_FLUSH;
-      this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
-      return true;
-    }
-    return false;
+    return lookingFor.size() == 0;
   }
 
   @Override
