@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 
 public class PokerHand implements Comparable {
   List<Card> cards;
-  private HandCalculator handCalculator;
+  private HandCalculator calculatorStrategy;
 
   PokerHand(
     Card... inputCards
   ) {
     //sort here
     cards = Arrays.stream(inputCards).collect(Collectors.toList());
-    handCalculator = new HandCalculator(cards);
+    calculatorStrategy = new FiveCardDrawCalculator(cards);
   }
 
   public static List<PokerHand> makeHands(String line) {
@@ -54,7 +54,7 @@ public class PokerHand implements Comparable {
   public int compareTo(Object o) {
 
     PokerHand otherHand = (PokerHand) o;
-    return handCalculator.compareTo(otherHand.handCalculator);
+    return calculatorStrategy.compareTo(otherHand.calculatorStrategy);
   }
 
   /**
