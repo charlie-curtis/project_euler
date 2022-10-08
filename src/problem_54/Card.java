@@ -39,4 +39,9 @@ public class Card extends AbstractMap.SimpleEntry<Character, Character> implemen
     if (rankB > rankA) return -1;
     return 0;
   }
+
+  @Override
+  public String toString() {
+    return this.value + "" + this.suit;
+  }
 }

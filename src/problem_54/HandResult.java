@@ -60,7 +60,7 @@ class HandResult implements Comparable {
       suitesFound.add(card.suit);
     }
     if (suitesFound.size() == 1) {
-      this.cardStart = this.cards.stream().sorted(Comparator.reverseOrder()).findFirst().get();
+      //this.cardStart = this.cards.stream().sorted(Comparator.reverseOrder()).findFirst().get();
       result = FLUSH;
       return true;
     }
@@ -88,7 +88,7 @@ class HandResult implements Comparable {
   private boolean checkIfHighCard() {
     HashMap<Character, Integer> map = new HashMap<>();
 
-    this.cardStart = this.cards.stream().sorted(Comparator.reverseOrder()).findFirst().get();
+    //this.cardStart = this.cards.stream().sorted(Comparator.reverseOrder()).findFirst().get();
     this.result = HIGH_CARD;
     return true;
   }
@@ -205,11 +205,6 @@ class HandResult implements Comparable {
     }
     return false;
   }
-
-  public int breakTie(HandResult otherHand) {
-    return -1;
-  }
-
   @Override
   public int compareTo(Object o) {
 
@@ -219,6 +214,11 @@ class HandResult implements Comparable {
     }
 
     //get high card kicker
+    System.out.println("Found TIE -- both were " + result);
+    this.cards.forEach(card -> System.out.printf("%s ", card));
+    System.out.println();
+    otherHandResult.cards.forEach(card -> System.out.printf("%s ", card));
+    System.out.println();
 
     return 0;
   }

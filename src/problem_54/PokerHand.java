@@ -1,24 +1,19 @@
 package problem_54;
 
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PokerHand implements Comparable  {
   List<Card> cards;
-  private int handResult;
+  private HandResult handResult;
 
   PokerHand(
     Card ...inputCards
   ) {
     //sort here
     cards = Arrays.stream(inputCards).collect(Collectors.toList());
-    computeHandResult();
+    handResult = new HandResult(cards);
   }
 
   public static List<PokerHand> makeHands(String line)
@@ -60,19 +55,8 @@ public class PokerHand implements Comparable  {
   public int compareTo(Object o) {
 
     PokerHand otherHand = (PokerHand)o;
-    if (this.handResult != otherHand.handResult) {
-      return this.handResult > otherHand.handResult ? 1 : -1;
-    }
-
-    //get high card kicker
-
-    return 0;
+    return handResult.compareTo(otherHand.handResult);
   }
-
-  private void computeHandResult()
-  {
-  }
-
 }
 
 
