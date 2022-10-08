@@ -16,10 +16,12 @@ public class Problem54 {
     String[] input = parser.toStringArray();
 
     int count = 0;
-    for(int i = 0; i < input.length; i++) {
+    for (int i = 0; i < input.length; i++) {
       String line = input[i];
       List<PokerHand> hands = PokerHand.makeHands(line);
-      if (hands.get(0).compareTo(hands.get(1)) > 0) {
+      PokerHand handA = hands.get(0);
+      PokerHand handB = hands.get(1);
+      if (handA.isBetterThan(handB)) {
         count++;
       }
     }

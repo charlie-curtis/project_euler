@@ -4,20 +4,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PokerHand implements Comparable  {
+public class PokerHand implements Comparable {
   List<Card> cards;
-  private HandResult handResult;
+  private HandCalculator handCalculator;
 
   PokerHand(
-    Card ...inputCards
+    Card... inputCards
   ) {
     //sort here
     cards = Arrays.stream(inputCards).collect(Collectors.toList());
-    handResult = new HandResult(cards);
+    handCalculator = new HandCalculator(cards);
   }
 
-  public static List<PokerHand> makeHands(String line)
-  {
+  public static List<PokerHand> makeHands(String line) {
     String[] split = line.split(" ");
     PokerHand hand1, hand2;
     Card[] valueCards = new Card[5];
@@ -27,7 +26,7 @@ public class PokerHand implements Comparable  {
 
     Card[] suitCards = new Card[5];
     for (int i = 5; i < split.length; i++) {
-      suitCards[i-5] = new Card(split[i].charAt(0), split[i].charAt(1));
+      suitCards[i - 5] = new Card(split[i].charAt(0), split[i].charAt(1));
     }
 
     hand1 = new PokerHand(valueCards);
@@ -43,7 +42,7 @@ public class PokerHand implements Comparable  {
     if (otherHand.cards.size() != this.cards.size()) {
       return false;
     }
-    for(int i = 0; i < this.cards.size(); i++) {
+    for (int i = 0; i < this.cards.size(); i++) {
       if (!(cards.get(i).equals(otherHand.cards.get(i)))) {
         return false;
       }
@@ -54,8 +53,15 @@ public class PokerHand implements Comparable  {
   @Override
   public int compareTo(Object o) {
 
-    PokerHand otherHand = (PokerHand)o;
-    return handResult.compareTo(otherHand.handResult);
+    PokerHand otherHand = (PokerHand) o;
+    return handCalculator.compareTo(otherHand.handCalculator);
+  }
+
+  /**
+   * Syntactic sugar for compareTo
+   */
+  public boolean isBetterThan(PokerHand otherHand) {
+    return this.compareTo(otherHand) == 1;
   }
 }
 
