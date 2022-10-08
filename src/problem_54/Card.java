@@ -31,7 +31,12 @@ public class Card extends AbstractMap.SimpleEntry<Character, Character> implemen
   }
 
   public boolean isCardSequential(Card otherCard) {
-    return getCardRanking() + 1 == otherCard.getCardRanking();
+    if (getCardRanking() + 1 == otherCard.getCardRanking()) {
+      return true;
+    }
+    //handle the case where ace is used low
+    return (this.value == 'A' && otherCard.value == '2');
+
   }
 
   @Override

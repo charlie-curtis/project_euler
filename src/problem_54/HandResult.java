@@ -2,13 +2,12 @@ package problem_54;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
+import java.util.stream.Collectors;
 
 class HandResult implements Comparable {
 
@@ -224,34 +223,55 @@ class HandResult implements Comparable {
   private boolean checkIfStraight() {
     List<Card> sortedCards = this.cards.stream().sorted().toList();
 
+    //get rid of the ace if it exists, for now.
+    sortedCards = sortedCards.stream().filter(card -> card.value != 'A').toList();
+
     for (int i = 0; i < sortedCards.size() - 1; i++) {
-      if (sortedCards.get(i).value + 1 != sortedCards.get(i + 1).value) {
+      Card thisCard = sortedCards.get(i);
+      Card nextCard = sortedCards.get(i+1);
+      if (!(thisCard.isCardSequential(nextCard))) {
         return false;
       }
     }
-    this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
+
+    if (sortedCards.size() == this.cards.size()) {
+      //no aces
+      this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
+      this.result = STRAIGHT;
+      return true;
+    }
+
+    //there was an ace
+    long numberOfAces = this.cards.stream().filter(card -> card.value == 'A').count();
+    long numberOfKings = this.cards.stream().filter(card -> card.value == 'K').count();
+    long numberOfTwos = this.cards.stream().filter(card -> card.value == '2').count();
+
+    if (numberOfAces > 1) {
+      return false;
+    }
+    if (numberOfKings == 0 && numberOfTwos == 0) {
+      return false;
+    }
+
+    if (numberOfKings == 1) {
+      this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
+    } else {
+      this.kickers = new ArrayList<>();
+      this.kickers.addAll(sortedCards.stream().sorted(Comparator.reverseOrder()).toList());
+      this.kickers.add(this.cards.stream().filter(card -> card.value == 'A').findFirst().get());
+    }
+
+
     this.result = STRAIGHT;
     return true;
   }
 
   private boolean checkIfStraightFlush() {
-    List<Card> sortedCards = this.cards.stream().sorted().toList();
-
-    Set<Character> suitesFound = new HashSet<>();
-    for (int i = 0; i < sortedCards.size() - 1; i++) {
-      Card thisCard = sortedCards.get(i);
-      Card nextCard = sortedCards.get(i+1);
-      suitesFound.add(sortedCards.get(i).suit);
-      if (!(thisCard.isCardSequential(nextCard))) {
-        return false;
-      }
-    }
-    if (suitesFound.size() == 1) {
-      this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
+    boolean isStraightFlush = (checkIfFlush() && checkIfStraight());
+    if (isStraightFlush) {
       this.result = STRAIGHT_FLUSH;
-      return true;
     }
-    return false;
+    return isStraightFlush;
   }
 
   private boolean checkIfRoyalFlush() {
