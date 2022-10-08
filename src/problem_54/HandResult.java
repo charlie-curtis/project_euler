@@ -1,11 +1,14 @@
 package problem_54;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 class HandResult implements Comparable {
 
@@ -21,13 +24,12 @@ class HandResult implements Comparable {
   private static final int HIGH_CARD = 1;
 
   private int result;
-  private Card cardStart;
-  //I wanna change this so that its a sorted list of cards for kickers
-  private Card kicker;
+  private List<Card> kickers = new ArrayList<>();
   private List<Card> cards;
 
   public HandResult(List<Card> cards) {
     this.cards = cards;
+    assignHand();
   }
 
   private void assignHand() {
@@ -40,6 +42,8 @@ class HandResult implements Comparable {
     } else if (checkIfFullHouse()) {
       return;
     } else if (checkIfFlush()) {
+      return;
+    } else if (checkIfStraight()) {
       return;
     } else if (checkIfThreeOfAKind()) {
       return;
@@ -60,7 +64,7 @@ class HandResult implements Comparable {
       suitesFound.add(card.suit);
     }
     if (suitesFound.size() == 1) {
-      //this.cardStart = this.cards.stream().sorted(Comparator.reverseOrder()).findFirst().get();
+      this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
       result = FLUSH;
       return true;
     }
@@ -76,7 +80,7 @@ class HandResult implements Comparable {
 
     for (Map.Entry<Character, Integer> entry : map.entrySet()) {
       if (entry.getValue() == 3) {
-        this.cardStart = this.cards.stream().filter(card -> card.value == entry.getKey()).findFirst().get();
+        this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
         this.result = FULL_HOUSE;
         return true;
       }
@@ -88,7 +92,7 @@ class HandResult implements Comparable {
   private boolean checkIfHighCard() {
     HashMap<Character, Integer> map = new HashMap<>();
 
-    //this.cardStart = this.cards.stream().sorted(Comparator.reverseOrder()).findFirst().get();
+    this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
     this.result = HIGH_CARD;
     return true;
   }
@@ -104,7 +108,16 @@ class HandResult implements Comparable {
 
     for (Map.Entry<Character, Integer> entry : map.entrySet()) {
       if (entry.getValue() == 2) {
-        this.cardStart = this.cards.stream().filter(card -> card.value == entry.getKey()).findAny().get();
+
+        List<Card> highToLow = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
+        for (int i = 0; i < highToLow.size(); i++) {
+          Card card = highToLow.get(i);
+          if (card.value == entry.getKey()) {
+            kickers.add(0, card);
+          } else {
+            kickers.add(card);
+          }
+        }
         this.result = ONE_PAIR;
         return true;
       }
@@ -124,9 +137,20 @@ class HandResult implements Comparable {
     if (map.size() != 3) {
       return false;
     }
+    List<Card> highToLow = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
     for (Map.Entry<Character, Integer> entry : map.entrySet()) {
       if (entry.getValue() == 2) {
-        this.cardStart = this.cards.stream().filter(card -> card.value == entry.getKey()).findAny().get();
+        Card remainingCard = null;
+        for (int i = 0; i < highToLow.size(); i++) {
+          Card card = highToLow.get(i);
+          if (map.get(card.value) == 2) {
+            kickers.add(card);
+          } else {
+            remainingCard = card;
+          }
+        }
+        kickers.sort(Comparator.naturalOrder());
+        kickers.add(remainingCard);
         this.result = TWO_PAIR;
         return true;
       }
@@ -143,9 +167,19 @@ class HandResult implements Comparable {
       map.put(card.value, count);
     });
 
+    List<Card> highToLow = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
     for (Map.Entry<Character, Integer> entry : map.entrySet()) {
       if (entry.getValue() == 3) {
-        this.cardStart = this.cards.stream().filter(card -> card.value == entry.getKey()).findAny().get();
+        List<Card> remainingCards = new ArrayList<>();
+        for (int i = 0; i < highToLow.size(); i++) {
+          Card card = highToLow.get(i);
+          if (map.get(card.value) == 3) {
+            kickers.add(card);
+          } else {
+            remainingCards.add(card);
+          }
+        }
+        kickers.addAll(remainingCards);
         this.result = THREE_OF_A_KIND;
         return true;
       }
@@ -164,12 +198,35 @@ class HandResult implements Comparable {
 
     for (Map.Entry<Character, Integer> entry : map.entrySet()) {
       if (entry.getValue() == 4) {
-        this.cardStart = this.cards.stream().filter(card -> card.value == entry.getKey()).findAny().get();
+        List<Card> highToLow = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
+        List<Card> remainingCards = new ArrayList<>();
+        for (int i = 0; i < highToLow.size(); i++) {
+          Card card = highToLow.get(i);
+          if (map.get(card.value) == 4) {
+            kickers.add(card);
+          } else {
+            remainingCards.add(card);
+          }
+        }
+        kickers.addAll(remainingCards);
         this.result = FOUR_OF_A_KIND;
         return true;
       }
     }
     return false;
+  }
+
+  private boolean checkIfStraight() {
+    List<Card> sortedCards = this.cards.stream().sorted().toList();
+
+    for (int i = 0; i < sortedCards.size() - 1; i++) {
+      if (sortedCards.get(i).value + 1 != sortedCards.get(i + 1).value) {
+        return false;
+      }
+    }
+    this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
+    this.result = STRAIGHT;
+    return true;
   }
 
   private boolean checkIfStraightFlush() {
@@ -183,7 +240,7 @@ class HandResult implements Comparable {
       }
     }
     if (suitesFound.size() == 1) {
-      cardStart = sortedCards.get(sortedCards.size() - 1);
+      this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
       this.result = STRAIGHT_FLUSH;
       return true;
     }
@@ -191,7 +248,7 @@ class HandResult implements Comparable {
   }
 
   private boolean checkIfRoyalFlush() {
-    Set<Character> lookingFor = Set.of('A', 'K', 'J', 'Q', 'T');
+    Set<Character> lookingFor = new HashSet<>(Set.of('A', 'K', 'J', 'Q', 'T'));
     Set<Character> suitesFound = new HashSet<>();
     for (int i = 0; i < this.cards.size(); i++) {
       Card card = this.cards.get(i);
@@ -201,6 +258,7 @@ class HandResult implements Comparable {
 
     if (lookingFor.size() == 0 && suitesFound.size() == 1) {
       this.result = ROYAL_FLUSH;
+      this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
       return true;
     }
     return false;
@@ -214,13 +272,39 @@ class HandResult implements Comparable {
     }
 
     //get high card kicker
-    System.out.println("Found TIE -- both were " + result);
+    System.out.printf("Found TIE -- both were %s%n", this);
     this.cards.forEach(card -> System.out.printf("%s ", card));
     System.out.println();
     otherHandResult.cards.forEach(card -> System.out.printf("%s ", card));
     System.out.println();
 
+    for (int i = 0; i < this.kickers.size(); i++) {
+      int compareTo = this.kickers.get(i).compareTo(otherHandResult.kickers.get(i));
+
+      if (compareTo != 0) {
+        System.out.printf("Breaking tie: Player %d wins%n", compareTo == 1 ? 1: 2);
+        return compareTo;
+      }
+    }
+
     return 0;
+  }
+
+  @Override
+  public String toString() {
+    return switch (result) {
+      case ROYAL_FLUSH -> "Royal Flush";
+      case STRAIGHT_FLUSH -> "Straight Flush";
+      case FOUR_OF_A_KIND -> "Four of a kind";
+      case FULL_HOUSE -> "Full house";
+      case FLUSH -> "Flush";
+      case STRAIGHT -> "Straight";
+      case THREE_OF_A_KIND -> "Three of a kind";
+      case TWO_PAIR -> "Two pair";
+      case ONE_PAIR -> "One pair";
+      case HIGH_CARD -> "High card";
+      default -> "UNKNOWN";
+    };
   }
 }
 
