@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 class FiveCardDrawCalculator implements HandCalculator {
 
@@ -32,34 +33,20 @@ class FiveCardDrawCalculator implements HandCalculator {
       this.result = HandConstants.STRAIGHT_FLUSH;
     } else if (isFourOfAKind()) {
       this.result = HandConstants.FOUR_OF_A_KIND;
-      return;
     } else if (checkIfFullHouse()) {
       this.result = HandConstants.FULL_HOUSE;
-      return;
     } else if (isFlush()) {
-      result = HandConstants.FLUSH;
+      this.result = HandConstants.FLUSH;
     } else if (checkIfStraight()) {
       this.result = HandConstants.STRAIGHT;
-      return;
     } else if (checkIfThreeOfAKind()) {
-      return;
+      this.result = HandConstants.THREE_OF_A_KIND;
     } else if (checkIfTwoPair()) {
-      return;
+      this.result = HandConstants.TWO_PAIR;
     } else if (checkIfOnePair()) {
-      return;
+      this.result = HandConstants.ONE_PAIR;
     } else {
       this.result = HandConstants.HIGH_CARD;
-    }
-
-
-
-  }
-
-  private void arrangeKickers()
-  {
-    if (this.result == HandConstants.FOUR_OF_A_KIND) {
-
-    } else {
     }
   }
 
@@ -69,141 +56,45 @@ class FiveCardDrawCalculator implements HandCalculator {
     return suitsFound.size() == 1;
   }
 
-  private boolean checkIfFullHouse() {
-    HashMap<Character, Integer> map = new HashMap<>();
-    this.cards.forEach(i -> {
-      int count = map.getOrDefault(i.value, 0);
-      map.put(i.value, ++count);
-    });
+  private boolean checkIfTwoPair() {
+    Map<Character, Integer> mostCommon = getHighestFrequencyValues(2);
 
-    Map.Entry<Character, Integer> mostCommon = map.entrySet().stream().max(Map.Entry.comparingByKey()).get();
-
-    if (mostCommon.getValue() != 3 || map.size() != 2) {
+    long distinctValues = mostCommon.values().stream().distinct().count();
+    if (!mostCommon.containsValue(2) || distinctValues != 1L) {
       return false;
-
     }
-
-    this.kickers = this.cards.stream().sorted((cardA, cardB) -> {
-      if (cardA.value == cardB.value) return 0;
-      if (cardA.value == mostCommon.getKey()) return -1;
-      if (cardB.value == mostCommon.getKey()) return 1;
-
-      return cardA.value > cardB.value ? -1: 1;
-    }).toList();
+    kickers = sortByValues(mostCommon);
     return true;
   }
 
-  private boolean checkIfOnePair() {
-    HashMap<Character, Integer> map = new HashMap<>();
+  private boolean checkIfThreeOfAKind() {
+    Map<Character, Integer> mostCommon = getHighestFrequencyValues(1);
 
-    this.cards.forEach(card -> {
-      Integer count = map.getOrDefault(card.value, 0);
-      count++;
-      map.put(card.value, count);
-    });
-
-    for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-      if (entry.getValue() == 2) {
-
-        List<Card> highToLow = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
-        for (int i = 0; i < highToLow.size(); i++) {
-          Card card = highToLow.get(i);
-          if (card.value == entry.getKey()) {
-            kickers.add(0, card);
-          } else {
-            kickers.add(card);
-          }
-        }
-        this.result = HandConstants.ONE_PAIR;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private boolean checkIfTwoPair() {
-    HashMap<Character, Integer> map = new HashMap<>();
-
-    this.cards.forEach(card -> {
-      Integer count = map.getOrDefault(card.value, 0);
-      count++;
-      map.put(card.value, count);
-    });
-
-    if (map.size() != 3) {
+    if (!mostCommon.containsValue(3)) {
       return false;
     }
-    List<Card> highToLow = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
-    for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-      if (entry.getValue() == 2) {
-        Card remainingCard = null;
-        for (int i = 0; i < highToLow.size(); i++) {
-          Card card = highToLow.get(i);
-          if (map.get(card.value) == 2) {
-            kickers.add(card);
-          } else {
-            remainingCard = card;
-          }
-        }
-        kickers.sort(Comparator.naturalOrder());
-        kickers.add(remainingCard);
-        this.result = HandConstants.TWO_PAIR;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private boolean checkIfThreeOfAKind() {
-    HashMap<Character, Integer> map = new HashMap<>();
-
-    this.cards.forEach(card -> {
-      Integer count = map.getOrDefault(card.value, 0);
-      count++;
-      map.put(card.value, count);
-    });
-
-    List<Card> highToLow = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
-    for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-      if (entry.getValue() == 3) {
-        List<Card> remainingCards = new ArrayList<>();
-        for (int i = 0; i < highToLow.size(); i++) {
-          Card card = highToLow.get(i);
-          if (map.get(card.value) == 3) {
-            kickers.add(card);
-          } else {
-            remainingCards.add(card);
-          }
-        }
-        kickers.addAll(remainingCards);
-        this.result = HandConstants.THREE_OF_A_KIND;
-        return true;
-      }
-    }
-    return false;
+    kickers = sortByValues(mostCommon);
+    return true;
   }
 
   private boolean isFourOfAKind() {
-    HashMap<Character, Integer> map = new HashMap<>();
 
-    this.cards.forEach(card -> {
-      Integer count = map.getOrDefault(card.value, 0);
-      count++;
-      map.put(card.value, count);
-    });
+    Map<Character, Integer> mostCommon = getHighestFrequencyValues(1);
 
-    Map.Entry<Character, Integer> mostCommon = map.entrySet().stream().max(Map.Entry.comparingByValue()).get();
-    if (mostCommon.getValue() != 4) {
+    if (!mostCommon.containsValue(4)) {
       return false;
     }
-    kickers = this.cards.stream().sorted((cardA, cardB) -> {
-      if (cardA.value == cardB.value) return 0;
-      if (cardA.value == mostCommon.getKey()) return -1;
-      if (cardB.value == mostCommon.getKey()) return 1;
+    kickers = sortByValues(mostCommon);
+    return true;
+  }
 
-      return cardA.value > cardB.value ? -1: 1;
+  private boolean checkIfFullHouse() {
+    Map<Character, Integer> mostCommon = getHighestFrequencyValues(2);
 
-    }).toList();
+    if (!mostCommon.containsValue(3) || !mostCommon.containsValue(2)) {
+      return false;
+    }
+    kickers = sortByValues(mostCommon);
     return true;
   }
 
@@ -294,16 +185,70 @@ class FiveCardDrawCalculator implements HandCalculator {
     return switch (result) {
       case HandConstants.ROYAL_FLUSH -> "Royal Flush";
       case HandConstants.STRAIGHT_FLUSH -> "Straight Flush";
-      case HandConstants.FOUR_OF_A_KIND -> "Four of a kind";
-      case HandConstants.FULL_HOUSE -> "Full house";
+      case HandConstants.FOUR_OF_A_KIND -> "Four of a Kind";
+      case HandConstants.FULL_HOUSE -> "Full House";
       case HandConstants.FLUSH -> "Flush";
       case HandConstants.STRAIGHT -> "Straight";
-      case HandConstants.THREE_OF_A_KIND -> "Three of a kind";
-      case HandConstants.TWO_PAIR -> "Two pair";
-      case HandConstants.ONE_PAIR -> "One pair";
-      case HandConstants.HIGH_CARD -> "High card";
+      case HandConstants.THREE_OF_A_KIND -> "Three of a Kind";
+      case HandConstants.TWO_PAIR -> "Two Pair";
+      case HandConstants.ONE_PAIR -> "One Pair";
+      case HandConstants.HIGH_CARD -> "High Card";
       default -> "UNKNOWN";
     };
   }
+
+  private Map<Character, Integer> getHighestFrequencyValues(int limit)
+  {
+    HashMap<Character, Integer> map = new HashMap<>();
+    this.cards.forEach(card -> {
+      Integer count = map.getOrDefault(card.value, 0);
+      count++;
+      map.put(card.value, count);
+    });
+
+    return map
+      .entrySet()
+      .stream()
+      .sorted(Comparator.comparing(Map.Entry::getValue, Comparator.reverseOrder()))
+      .limit(limit)
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  /**
+   * Sorts in the following order
+   * - If both cards have the same value -> 0
+   * - If neither card is the most frequent element OR they both appeared the same amount -> compare by card value
+   * - else compare by the most frequently element
+   * @param valuesToSortBy
+   * @return
+   */
+  private List<Card> sortByValues(Map<Character, Integer> valuesToSortBy)
+  {
+    return this.cards.stream().sorted((cardA, cardB) -> {
+      if (cardA.value == cardB.value) return 0;
+      Integer cardAPriority = (valuesToSortBy.get(cardA.value) == null) ? Integer.MIN_VALUE : valuesToSortBy.get(cardA.value);
+      Integer cardBPriority = (valuesToSortBy.get(cardB.value) == null) ? Integer.MIN_VALUE : valuesToSortBy.get(cardB.value);
+      if (cardAPriority == Integer.MIN_VALUE && cardBPriority == Integer.MIN_VALUE
+        || cardAPriority.equals(cardBPriority)) {
+        return cardA.value > cardB.value ? -1: 1;
+      }
+
+      return cardAPriority > cardBPriority ? -1 : 1;
+
+    }).toList();
+  }
+
+
+  private boolean checkIfOnePair() {
+
+    Map<Character, Integer> mostCommon = getHighestFrequencyValues(1);
+
+    if (!mostCommon.containsValue(2)) {
+      return false;
+    }
+    kickers = sortByValues(mostCommon);
+    return true;
+  }
+
 }
 

@@ -115,6 +115,12 @@ public class PokerTest {
     FiveCardDrawCalculator higherOnePair = new FiveCardDrawCalculator(createCardsFromString("AH AS TH 3D KH"));
     Assert.assertEquals(1, higherOnePair.compareTo(onePair));
 
+
+    onePair = new FiveCardDrawCalculator(createCardsFromString("2H 2S TH QD QH"));
+    higherOnePair = new FiveCardDrawCalculator(createCardsFromString("KH KS TH 2D 2H"));
+    Assert.assertEquals(-1, onePair.compareTo(higherOnePair));
+    Assert.assertEquals(1, higherOnePair.compareTo(onePair));
+
     FiveCardDrawCalculator highCard = new FiveCardDrawCalculator(createCardsFromString("1H 2S 3H 7D TH"));
     FiveCardDrawCalculator slightlyHigherHighCard = new FiveCardDrawCalculator(createCardsFromString("1H 2S 5H 7D TH"));
     Assert.assertEquals(1, slightlyHigherHighCard.compareTo(highCard));
