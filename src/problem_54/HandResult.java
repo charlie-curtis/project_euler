@@ -12,16 +12,16 @@ import java.util.Stack;
 
 class HandResult implements Comparable {
 
-  private static final int ROYAL_FLUSH = 10;
-  private static final int STRAIGHT_FLUSH = 9;
-  private static final int FOUR_OF_A_KIND = 8;
-  private static final int FULL_HOUSE = 7;
-  private static final int FLUSH = 6;
-  private static final int STRAIGHT = 5;
-  private static final int THREE_OF_A_KIND = 4;
-  private static final int TWO_PAIR = 3;
-  private static final int ONE_PAIR = 2;
-  private static final int HIGH_CARD = 1;
+  static final int ROYAL_FLUSH = 10;
+  static final int STRAIGHT_FLUSH = 9;
+  static final int FOUR_OF_A_KIND = 8;
+  static final int FULL_HOUSE = 7;
+  static final int FLUSH = 6;
+  static final int STRAIGHT = 5;
+  static final int THREE_OF_A_KIND = 4;
+  static final int TWO_PAIR = 3;
+  static final int ONE_PAIR = 2;
+  static final int HIGH_CARD = 1;
 
   private int result;
   private List<Card> kickers = new ArrayList<>();
@@ -30,6 +30,11 @@ class HandResult implements Comparable {
   public HandResult(List<Card> cards) {
     this.cards = cards;
     assignHand();
+  }
+
+  public int getResult()
+  {
+    return result;
   }
 
   private void assignHand() {
@@ -79,7 +84,7 @@ class HandResult implements Comparable {
     });
 
     for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-      if (entry.getValue() == 3) {
+      if (entry.getValue() == 3 && map.size() == 2) {
         this.kickers = this.cards.stream().sorted(Comparator.reverseOrder()).toList();
         this.result = FULL_HOUSE;
         return true;
@@ -234,8 +239,10 @@ class HandResult implements Comparable {
 
     Set<Character> suitesFound = new HashSet<>();
     for (int i = 0; i < sortedCards.size() - 1; i++) {
+      Card thisCard = sortedCards.get(i);
+      Card nextCard = sortedCards.get(i+1);
       suitesFound.add(sortedCards.get(i).suit);
-      if (sortedCards.get(i).value + 1 != sortedCards.get(i + 1).value) {
+      if (!(thisCard.isCardSequential(nextCard))) {
         return false;
       }
     }

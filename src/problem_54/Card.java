@@ -12,7 +12,8 @@ public class Card extends AbstractMap.SimpleEntry<Character, Character> implemen
     this.suit = second;
   }
 
-  private int getCardRanking(Character c) {
+  private int getCardRanking() {
+    char c = this.value;
     switch ((int) c) {
       case 'A':
         return 62;
@@ -29,11 +30,15 @@ public class Card extends AbstractMap.SimpleEntry<Character, Character> implemen
     }
   }
 
+  public boolean isCardSequential(Card otherCard) {
+    return getCardRanking() + 1 == otherCard.getCardRanking();
+  }
+
   @Override
   public int compareTo(Object o) {
     Card otherCard = (Card) o;
-    int rankA = getCardRanking(value);
-    int rankB = getCardRanking(otherCard.value);
+    int rankA = this.getCardRanking();
+    int rankB = otherCard.getCardRanking();
 
     if (rankA > rankB) return 1;
     if (rankB > rankA) return -1;
