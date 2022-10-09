@@ -1,5 +1,7 @@
 package problem_54;
 
+import problem_54.comparator.CardComparator;
+
 public class Card implements Comparable {
   public Character value;
   public Character suit;

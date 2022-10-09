@@ -1,5 +1,7 @@
-package problem_54;
+package problem_54.comparator;
 
+
+import problem_54.Card;
 
 import java.util.List;
 

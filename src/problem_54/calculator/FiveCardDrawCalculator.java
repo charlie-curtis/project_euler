@@ -1,4 +1,8 @@
-package problem_54;
+package problem_54.calculator;
+
+import problem_54.Card;
+import problem_54.constant.HandConstants;
+import problem_54.comparator.CardComparator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class FiveCardDrawCalculator implements HandCalculator {
+public class FiveCardDrawCalculator implements HandCalculator {
 
   private int result;
   private List<Card> kickers = new ArrayList<>();

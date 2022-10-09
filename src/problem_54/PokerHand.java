@@ -1,5 +1,8 @@
 package problem_54;
 
+import problem_54.calculator.FiveCardDrawCalculator;
+import problem_54.calculator.HandCalculator;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,6 +1,9 @@
-package problem_54;
+package problem_54.test;
 
 import junit.framework.Assert;
+import problem_54.Card;
+import problem_54.calculator.FiveCardDrawCalculator;
+import problem_54.constant.HandConstants;
 
 import java.util.ArrayList;
 import java.util.List;
