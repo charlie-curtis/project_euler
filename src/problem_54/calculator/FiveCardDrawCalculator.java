@@ -27,57 +27,56 @@ public class FiveCardDrawCalculator implements HandCalculator {
   }
 
   private void computeHand() {
-
     this.cards.sort(CardComparator::aceHighCompare);
-    if (checkIfRoyalFlush()) {
+    if (handleIfRoyalFlush()) {
       this.result = HandConstants.ROYAL_FLUSH;
-    } else if (isStraightFlush()) {
+    } else if (handleIfStraightFlush()) {
       this.result = HandConstants.STRAIGHT_FLUSH;
-    } else if (isFourOfAKind()) {
+    } else if (handleIfFourOfAKind()) {
       this.result = HandConstants.FOUR_OF_A_KIND;
-    } else if (checkIfFullHouse()) {
+    } else if (handleIfFullHouse()) {
       this.result = HandConstants.FULL_HOUSE;
-    } else if (isFlush()) {
+    } else if (handleIfFlush()) {
       this.result = HandConstants.FLUSH;
-    } else if (checkIfStraight()) {
+    } else if (handleIfStraight()) {
       this.result = HandConstants.STRAIGHT;
-    } else if (checkIfThreeOfAKind()) {
+    } else if (handleIfThreeOfAKind()) {
       this.result = HandConstants.THREE_OF_A_KIND;
-    } else if (checkIfTwoPair()) {
+    } else if (handleIfTwoPair()) {
       this.result = HandConstants.TWO_PAIR;
-    } else if (checkIfOnePair()) {
+    } else if (handleIfOnePair()) {
       this.result = HandConstants.ONE_PAIR;
     } else {
       this.result = HandConstants.HIGH_CARD;
     }
   }
 
-  private boolean isFlush() {
-    return this.cards.stream().map(Card::getSuit).distinct().count() == 1;
-  }
 
-  private boolean checkIfTwoPair() {
-    Map<Character, Integer> mostCommon = getHighestFrequencyValues(2);
-
-    long distinctValues = mostCommon.values().stream().distinct().count();
-    if (!mostCommon.containsValue(2) || distinctValues != 1L) {
+  /**
+   * @return true if all the cards are of the same suit, and there is an ace, king, queen, jack, and 10
+   */
+  private boolean handleIfRoyalFlush() {
+    if (!handleIfFlush()) {
       return false;
     }
-    sortCardsByValues(mostCommon);
-    return true;
+    Set<Character> lookingFor = new HashSet<>(Set.of('A', 'K', 'J', 'Q', 'T'));
+    this.cards.forEach(card -> lookingFor.remove(card.value));
+
+    return lookingFor.size() == 0;
   }
 
-  private boolean checkIfThreeOfAKind() {
-    Map<Character, Integer> mostCommon = getHighestFrequencyValues(1);
-
-    if (!mostCommon.containsValue(3)) {
-      return false;
-    }
-    sortCardsByValues(mostCommon);
-    return true;
+  /**
+   * This function has side effects. See handleIfStraight
+   */
+  private boolean handleIfStraightFlush() {
+    return handleIfFlush() && handleIfStraight();
   }
 
-  private boolean isFourOfAKind() {
+  /**
+   * This function has side effects. it puts the 4 of a kind at the front of the hand
+   * @return true if there is some value that appears 4 times.
+   */
+  private boolean handleIfFourOfAKind() {
 
     Map<Character, Integer> mostCommon = getHighestFrequencyValues(1);
 
@@ -88,7 +87,11 @@ public class FiveCardDrawCalculator implements HandCalculator {
     return true;
   }
 
-  private boolean checkIfFullHouse() {
+  /**
+   * This function has side effects. It puts the three of a kind at the front of the hand
+   * @return true if there is 3 of a kind + a pair.
+   */
+  private boolean handleIfFullHouse() {
     Map<Character, Integer> mostCommon = getHighestFrequencyValues(2);
 
     if (!mostCommon.containsValue(3) || !mostCommon.containsValue(2)) {
@@ -98,7 +101,19 @@ public class FiveCardDrawCalculator implements HandCalculator {
     return true;
   }
 
-  private boolean checkIfStraight() {
+  /**
+   * @return If all the cards have the same suit, return true
+   */
+  private boolean handleIfFlush() {
+    return this.cards.stream().map(Card::getSuit).distinct().count() == 1;
+  }
+
+
+  /**
+   * this function has side effects. It puts the straight in descending order
+   * @return true if all the cards are sequential (i.e. King -> Queen -> Jack -> Ten -> 9)
+   */
+  private boolean handleIfStraight() {
     boolean areCardsSequential = CardComparator.areCardsSequential(this.cards);
 
     if (!areCardsSequential) {
@@ -117,19 +132,50 @@ public class FiveCardDrawCalculator implements HandCalculator {
     return true;
   }
 
-  private boolean isStraightFlush() {
-    return isFlush() && checkIfStraight();
-  }
+  /**
+   * @return If the highest frequency is 3, return true.
+   */
+  private boolean handleIfThreeOfAKind() {
+    Map<Character, Integer> mostCommon = getHighestFrequencyValues(1);
 
-  private boolean checkIfRoyalFlush() {
-    if (!isFlush()) {
+    if (!mostCommon.containsValue(3)) {
       return false;
     }
-    Set<Character> lookingFor = new HashSet<>(Set.of('A', 'K', 'J', 'Q', 'T'));
-    this.cards.forEach(card -> lookingFor.remove(card.value));
-
-    return lookingFor.size() == 0;
+    sortCardsByValues(mostCommon);
+    return true;
   }
+
+  /**
+   * This function has side effects. It orders the hand by putting the pairs
+   * at the front.
+   * @return If the two most common cards have a frequency of two, return true
+   */
+  private boolean handleIfTwoPair() {
+    Map<Character, Integer> mostCommon = getHighestFrequencyValues(2);
+
+    long distinctValues = mostCommon.values().stream().distinct().count();
+    if (!mostCommon.containsValue(2) || distinctValues != 1L) {
+      return false;
+    }
+    sortCardsByValues(mostCommon);
+    return true;
+  }
+
+  /**
+   *
+   * @return true if there are two cards with the same value.
+   */
+  private boolean handleIfOnePair() {
+
+    Map<Character, Integer> mostCommon = getHighestFrequencyValues(1);
+
+    if (!mostCommon.containsValue(2)) {
+      return false;
+    }
+    sortCardsByValues(mostCommon);
+    return true;
+  }
+
 
   @Override
   public int compareTo(Object o) {
@@ -178,6 +224,9 @@ public class FiveCardDrawCalculator implements HandCalculator {
     };
   }
 
+  /**
+   * finds the most frequent X values in a hand.
+   */
   private Map<Character, Integer> getHighestFrequencyValues(int limit)
   {
     HashMap<Character, Integer> map = new HashMap<>();
@@ -219,18 +268,4 @@ public class FiveCardDrawCalculator implements HandCalculator {
 
     });
   }
-
-
-  private boolean checkIfOnePair() {
-
-    Map<Character, Integer> mostCommon = getHighestFrequencyValues(1);
-
-    if (!mostCommon.containsValue(2)) {
-      return false;
-    }
-    sortCardsByValues(mostCommon);
-    return true;
-  }
-
 }
-
