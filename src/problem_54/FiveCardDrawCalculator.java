@@ -26,7 +26,7 @@ class FiveCardDrawCalculator implements HandCalculator {
 
   private void computeHand() {
 
-    this.kickers = new ArrayList<>(this.cards.stream().sorted(Comparator.reverseOrder()).toList());
+    this.kickers = new ArrayList<>(this.cards.stream().sorted(CardComparator::aceHighCompare).toList());
     if (checkIfRoyalFlush()) {
       this.result = HandConstants.ROYAL_FLUSH;
     } else if (isStraightFlush()) {
@@ -51,9 +51,7 @@ class FiveCardDrawCalculator implements HandCalculator {
   }
 
   private boolean isFlush() {
-    Set<Character> suitsFound = new HashSet<>();
-    this.cards.forEach(card -> suitsFound.add(card.suit));
-    return suitsFound.size() == 1;
+    return this.cards.stream().map(Card::getSuit).distinct().count() == 1;
   }
 
   private boolean checkIfTwoPair() {
@@ -99,41 +97,20 @@ class FiveCardDrawCalculator implements HandCalculator {
   }
 
   private boolean checkIfStraight() {
-    List<Card> sortedCards = this.cards.stream().sorted().toList();
+    boolean areCardsSequential = CardComparator.areCardsSequential(this.cards);
 
-    //get rid of the ace if it exists, for now.
-    sortedCards = sortedCards.stream().filter(card -> card.value != 'A').toList();
-
-    for (int i = 0; i < sortedCards.size() - 1; i++) {
-      Card thisCard = sortedCards.get(i);
-      Card nextCard = sortedCards.get(i + 1);
-      if (!(thisCard.isCardSequential(nextCard))) {
-        return false;
-      }
+    if (!areCardsSequential) {
+      return false;
     }
 
-    if (sortedCards.size() == this.cards.size()) {
-      //no aces
+    long numberOfAces = this.cards.stream().filter(card -> card.value == 'A').count();
+    long numberOfTwos = this.cards.stream().filter(card -> card.value == '2').count();
+    if (numberOfAces == 0 || numberOfTwos == 0) {
+      //dont have to worry about the case where ace is low
       return true;
     }
 
-    //there was an ace
-    long numberOfAces = this.cards.stream().filter(card -> card.value == 'A').count();
-    long numberOfKings = this.cards.stream().filter(card -> card.value == 'K').count();
-    long numberOfTwos = this.cards.stream().filter(card -> card.value == '2').count();
-
-    if (numberOfAces > 1) {
-      return false;
-    }
-    if (numberOfKings == 0 && numberOfTwos == 0) {
-      return false;
-    }
-
-    if (numberOfTwos == 1) {
-      this.kickers = new ArrayList<>();
-      this.kickers.addAll(sortedCards.stream().sorted(Comparator.reverseOrder()).toList());
-      this.kickers.add(this.cards.stream().filter(card -> card.value == 'A').findFirst().get());
-    }
+    this.kickers.sort(CardComparator::aceLowCompare);
 
     return true;
   }
@@ -171,8 +148,10 @@ class FiveCardDrawCalculator implements HandCalculator {
       int compareTo = this.kickers.get(i).compareTo(otherCalculator.kickers.get(i));
 
       if (compareTo != 0) {
-        System.out.printf("Breaking tie: Player %d wins%n", compareTo == 1 ? 1 : 2);
-        return compareTo;
+        System.out.printf("Breaking tie: Player %d wins%n", compareTo == -1 ? 1 : 2);
+        //We are inverting here because the cards themselves consider larger face values to be -1,
+        //but as far as comparing hands, 1 indicates the hand is greater
+        return -1 * compareTo;
       }
     }
 
