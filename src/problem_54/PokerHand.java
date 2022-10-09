@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class PokerHand implements Comparable {
   List<Card> cards;
-  private HandCalculator calculatorStrategy;
+  private final HandCalculator calculatorStrategy;
 
   PokerHand(
     Card... inputCards
@@ -22,18 +22,18 @@ public class PokerHand implements Comparable {
   public static List<PokerHand> makeHands(String line) {
     String[] split = line.split(" ");
     PokerHand hand1, hand2;
-    Card[] valueCards = new Card[5];
+    Card[] firstHandCards = new Card[5];
     for (int i = 0; i < 5; i++) {
-      valueCards[i] = new Card(split[i].charAt(0), split[i].charAt(1));
+      firstHandCards[i] = new Card(split[i].charAt(0), split[i].charAt(1));
     }
 
-    Card[] suitCards = new Card[5];
+    Card[] secondHandCards = new Card[5];
     for (int i = 5; i < split.length; i++) {
-      suitCards[i - 5] = new Card(split[i].charAt(0), split[i].charAt(1));
+      secondHandCards[i - 5] = new Card(split[i].charAt(0), split[i].charAt(1));
     }
 
-    hand1 = new PokerHand(valueCards);
-    hand2 = new PokerHand(suitCards);
+    hand1 = new PokerHand(firstHandCards);
+    hand2 = new PokerHand(secondHandCards);
     return List.of(hand1, hand2);
   }
 
