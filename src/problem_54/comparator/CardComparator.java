@@ -1,6 +1,5 @@
 package problem_54.comparator;
 
-
 import problem_54.Card;
 
 import java.util.List;
@@ -57,11 +56,11 @@ public class CardComparator {
 
   public static boolean areCardsSequential(List<Card> cards)
   {
-    cards.sort(CardComparator::aceHighCompare);
-    if (areCardsSequential(cards, true)) {
+    List<Card> sortedCards = cards.stream().sorted(CardComparator::aceHighCompare).toList();
+    if (areCardsSequential(sortedCards, true)) {
       return true;
     }
-    cards.sort(CardComparator::aceLowCompare);
-    return areCardsSequential(cards, false);
+    sortedCards = cards.stream().sorted(CardComparator::aceLowCompare).toList();
+    return areCardsSequential(sortedCards, false);
   }
 }

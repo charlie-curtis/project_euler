@@ -4,7 +4,6 @@ import problem_54.Card;
 import problem_54.constant.HandConstants;
 import problem_54.comparator.CardComparator;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 public class FiveCardDrawCalculator implements HandCalculator {
 
   private int result;
-  private List<Card> kickers = new ArrayList<>();
   private List<Card> cards;
 
   public FiveCardDrawCalculator(List<Card> cards) {
@@ -30,7 +28,7 @@ public class FiveCardDrawCalculator implements HandCalculator {
 
   private void computeHand() {
 
-    this.kickers = new ArrayList<>(this.cards.stream().sorted(CardComparator::aceHighCompare).toList());
+    this.cards.sort(CardComparator::aceHighCompare);
     if (checkIfRoyalFlush()) {
       this.result = HandConstants.ROYAL_FLUSH;
     } else if (isStraightFlush()) {
@@ -65,7 +63,7 @@ public class FiveCardDrawCalculator implements HandCalculator {
     if (!mostCommon.containsValue(2) || distinctValues != 1L) {
       return false;
     }
-    kickers = sortByValues(mostCommon);
+    sortCardsByValues(mostCommon);
     return true;
   }
 
@@ -75,7 +73,7 @@ public class FiveCardDrawCalculator implements HandCalculator {
     if (!mostCommon.containsValue(3)) {
       return false;
     }
-    kickers = sortByValues(mostCommon);
+    sortCardsByValues(mostCommon);
     return true;
   }
 
@@ -86,7 +84,7 @@ public class FiveCardDrawCalculator implements HandCalculator {
     if (!mostCommon.containsValue(4)) {
       return false;
     }
-    kickers = sortByValues(mostCommon);
+    sortCardsByValues(mostCommon);
     return true;
   }
 
@@ -96,7 +94,7 @@ public class FiveCardDrawCalculator implements HandCalculator {
     if (!mostCommon.containsValue(3) || !mostCommon.containsValue(2)) {
       return false;
     }
-    kickers = sortByValues(mostCommon);
+    sortCardsByValues(mostCommon);
     return true;
   }
 
@@ -114,7 +112,7 @@ public class FiveCardDrawCalculator implements HandCalculator {
       return true;
     }
 
-    this.kickers.sort(CardComparator::aceLowCompare);
+    this.cards.sort(CardComparator::aceLowCompare);
 
     return true;
   }
@@ -148,8 +146,8 @@ public class FiveCardDrawCalculator implements HandCalculator {
     otherCalculator.cards.forEach(card -> System.out.printf("%s ", card));
     System.out.println();
 
-    for (int i = 0; i < this.kickers.size(); i++) {
-      int compareTo = this.kickers.get(i).compareTo(otherCalculator.kickers.get(i));
+    for (int i = 0; i < this.cards.size(); i++) {
+      int compareTo = this.cards.get(i).compareTo(otherCalculator.cards.get(i));
 
       if (compareTo != 0) {
         System.out.printf("Breaking tie: Player %d wins%n", compareTo == -1 ? 1 : 2);
@@ -202,12 +200,13 @@ public class FiveCardDrawCalculator implements HandCalculator {
    * - If both cards have the same value -> 0
    * - If neither card is the most frequent element OR they both appeared the same amount -> compare by card value
    * - else compare by the most frequently element
-   * @param valuesToSortBy
-   * @return
+   * @param valuesToSortBy - list of values to sort by. this function will place the character
+   *                       with the highest frequency at the front of the list, and then the next
+   *                       character, etc.
    */
-  private List<Card> sortByValues(Map<Character, Integer> valuesToSortBy)
+  private void sortCardsByValues(Map<Character, Integer> valuesToSortBy)
   {
-    return this.cards.stream().sorted((cardA, cardB) -> {
+    this.cards.sort((cardA, cardB) -> {
       if (cardA.value == cardB.value) return 0;
       Integer cardAPriority = (valuesToSortBy.get(cardA.value) == null) ? Integer.MIN_VALUE : valuesToSortBy.get(cardA.value);
       Integer cardBPriority = (valuesToSortBy.get(cardB.value) == null) ? Integer.MIN_VALUE : valuesToSortBy.get(cardB.value);
@@ -218,7 +217,7 @@ public class FiveCardDrawCalculator implements HandCalculator {
 
       return cardAPriority > cardBPriority ? -1 : 1;
 
-    }).toList();
+    });
   }
 
 
@@ -229,7 +228,7 @@ public class FiveCardDrawCalculator implements HandCalculator {
     if (!mostCommon.containsValue(2)) {
       return false;
     }
-    kickers = sortByValues(mostCommon);
+    sortCardsByValues(mostCommon);
     return true;
   }
 
