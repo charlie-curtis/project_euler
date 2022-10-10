@@ -21,10 +21,12 @@ public class Problem80 {
           MathContext context = new MathContext(115);
           return BigDecimal.valueOf(num).sqrt(context).toString();
         })
-        .map(s1 -> s1.replace('.', '0')) //get rid of the decimal point
-        //convert the string into an array, take the first 100 numbers -- 1 extra for the decimal point we replaced
-        .flatMap(s1 -> Arrays.stream(s1.split("")).limit(101))
-        //cast & sum
-        .mapToLong(Long::parseLong).sum();
+        //convert the string into an array, take the first 100 numbers
+        .flatMap(s1 ->
+            Arrays.stream(s1.split(""))
+                .filter(s2 -> s2.charAt(0) != '.')
+                .limit(100)
+        )
+        .mapToLong(Long::parseLong).sum(); //cast and sum
   }
 }
