@@ -8,31 +8,43 @@ import java.util.Arrays;
 public class Problem96 {
 
   public static void main(String[] args) {
-
-    System.out.printf("The answer is %d\n", compute());
+    compute();
   }
 
   public static long compute() {
     FileParser parser = new FileParser("src/problem_96/sudoku.txt");
     String[] lines = parser.toStringArray();
     ArrayList<Integer> results = new ArrayList<>();
-    for (int i = 0; i < 50; i++) {
-      int[][] board = new int[9][9];
-      for (int j = 0; j < 10; j++) {
-        if (j == 0) {
-          //get rid of the "Grid X" text
-          continue;
-        }
-        String line = lines[i*10 + j];
-        String[] stringValues = line.split("");
-        int[] values = Arrays.stream(stringValues).mapToInt(Integer::parseInt).toArray();
-        board[j - 1] = values;
+    int[][] answer = null;
+    int[][] board = new int[9][9];
+    for (int j = 0; j < 10; j++) {
+      if (j == 0) {
+        //get rid of the "Grid X" text
+        continue;
       }
-      int answer = getTopLeftCornerIfValid(9, 0, 0, board);
-      System.out.printf("Adding %d to the answer%n", answer);
-      results.add(answer);
+      String line = lines[j];
+      String[] stringValues = line.split("");
+      int[] values = Arrays.stream(stringValues).mapToInt(Integer::parseInt).toArray();
+      board[j - 1] = values;
     }
-    return results.stream().reduce(0, (a1, a2) -> a1+a2);
+    answer = getTopLeftCornerIfValid(9, 0, 0, board);
+
+    for (int i = 0; i < answer.length; i++) {
+      if (i % 3 == 0) {
+        System.out.println("--------------------------");
+      }
+      for (int j = 0; j < answer.length; j++) {
+        if (j % 3 == 0) {
+          System.out.print("| ");
+        }
+        System.out.print(answer[i][j] + " ");
+      }
+      System.out.print("|");
+      System.out.println();
+    }
+    System.out.println("--------------------------");
+
+    return 0;
   }
 
   private static boolean isAtEndOfBoard(int i, int j)
@@ -56,17 +68,17 @@ public class Problem96 {
   }
 
   //i & j run from 0 to 8
-  private static int getTopLeftCornerIfValid(int numberToPlace, int i, int j, int[][] currentBoard)
+  private static int[][] getTopLeftCornerIfValid(int numberToPlace, int i, int j, int[][] currentBoard)
   {
     if (isAtEndOfBoard(i, j)) {
       //if we made it to the end of the board without failing validation, we're good
-      return Integer.parseInt("" + currentBoard[0][0] + currentBoard[0][1] + currentBoard[0][2]);
+      return currentBoard;
     } else if (wereAllNumbersPlaced(numberToPlace)) {
       //If all numbers were placed successfully on this row, we can continue
       return getTopLeftCornerIfValid(9, i + 1, 0, currentBoard);
     } else if (!areThereCellsLeftToTryForRow(i, j)) {
       //we weren't able to find a valid spot to place a number with this setup
-      return 0;
+      return null;
     } else if (doesRowHaveValue(numberToPlace, i, j, currentBoard)) {
       //this row already has the value -- no need to place it again, so go to the next one
       return getTopLeftCornerIfValid(numberToPlace-1, i, 0, currentBoard);
@@ -81,9 +93,12 @@ public class Problem96 {
     //if we mae it here, its a valid move
     int[][] newBoard = copy(currentBoard);
     newBoard[i][j] = numberToPlace;
-    int resultIfIPlaceNumberHere = getTopLeftCornerIfValid(numberToPlace - 1, i, 0, newBoard);
-    int resultIfIDontPlaceNumberHere = getTopLeftCornerIfValid(numberToPlace, i, j+1, currentBoard);
-    return Math.max(resultIfIDontPlaceNumberHere, resultIfIPlaceNumberHere);
+    int[][] resultIfIPlaceNumberHere = getTopLeftCornerIfValid(numberToPlace - 1, i, 0, newBoard);
+    int[][] resultIfIDontPlaceNumberHere = getTopLeftCornerIfValid(numberToPlace, i, j+1, currentBoard);
+    if (resultIfIPlaceNumberHere != null) {
+      return resultIfIPlaceNumberHere;
+    }
+    return resultIfIDontPlaceNumberHere;
   }
 
   private static int[][] copy(int[][] board)
