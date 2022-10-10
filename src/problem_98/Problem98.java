@@ -29,9 +29,8 @@ public class Problem98 {
     FileParser parser = new FileParser("src/problem_98/words.txt");
     List<String> lines = Arrays.asList(parser.fromCsv());
 
-    Map<Integer, List<String>> groupedAnagrams = groupAnagrams(lines);
-    int maxLength = getMaxLength(groupedAnagrams);
-    computeAnagramSquares(maxLength);
+    groupAnagrams(lines);
+    computeAnagramSquares();
     return computeAnswer();
   }
 
@@ -49,17 +48,16 @@ public class Problem98 {
     return max;
   }
 
-  private static int getMaxLength(Map<Integer, List<String>> groupedAnagrams)
+  private static int getMaxLength()
   {
-    return groupedAnagrams
-      .values()
+    return validWordAnagrams
       .stream()
       .map(list -> list.get(0))
       .map(String::length)
       .reduce(0, Math::max);
   }
 
-  private static Map<Integer, List<String>> groupAnagrams(List<String> words)
+  private static void groupAnagrams(List<String> words)
   {
     Map<Integer, List<String>> hashCodeToAnagramListMap = new HashMap<>();
     words.forEach(
@@ -76,7 +74,6 @@ public class Problem98 {
       .stream()
       .filter(list -> list.size() != 1)
       .toList();
-    return hashCodeToAnagramListMap;
   }
 
   private static long checkMappings(List<String> wordsToCheck)
@@ -102,32 +99,30 @@ public class Problem98 {
     return max;
   }
 
-  private static long checkMapping(String w1, String w2, Long number, Set<Long> availableNumbers)
+  private static boolean isPalindrome(String w1, String w2)
   {
-    Long originalNumber = number;
-    if (w1.length() != w2.length()) {
-      return 0;
-    }
-    boolean isPalindrome = true;
     for (int i = 0; i < w1.length(); i++) {
       char a = w1.charAt(i);
-      char b = w2.charAt(w2.length()-i-1);
+      char b = w2.charAt(w2.length() - i - 1);
 
       if (a != b) {
-        isPalindrome = false;
+        return false;
       }
     }
-    if (isPalindrome) {
-      return 0;
-    }
+    return true;
+  }
+
+  private static long checkMapping(String w1, String w2, Long number, Set<Long> availableNumbers)
+  {
+    if (w1.length() != w2.length()) return 0;
+    if (getNumberOfDigits(number) != w1.length()) return 0;
+    if (isPalindrome(w1, w2)) return 0;
+
+    Long originalNumber = number;
     HashMap<Character, Integer> charToIntMap = new HashMap<>();
     HashMap<Integer, Character> intToCharMap = new HashMap<>();
 
     for (int i = w1.length()-1; i>=0; i--) {
-      if (number == 0) {
-        //number of digits in # isn't equal to length of string
-        return 0;
-      }
       int lastDigit = (int) (number % 10);
       //cannot remap
       if (charToIntMap.containsKey(w1.charAt(i)) && charToIntMap.get(w1.charAt(i)) != lastDigit) {
@@ -155,9 +150,6 @@ public class Problem98 {
     }
 
     Long lookingFor = Long.parseLong(s);
-    if (lookingFor == originalNumber) {
-      System.out.println("what");
-    }
     if (availableNumbers.contains(lookingFor)) {
       System.out.printf("Found Valid Pair: %s and %s with numbers %d and %d %n", w1, w2, originalNumber, lookingFor);
       return Math.max(originalNumber, lookingFor);
@@ -176,11 +168,12 @@ public class Problem98 {
     return count;
   }
 
-  private static void computeAnagramSquares(int maxLength)
+  private static void computeAnagramSquares()
   {
     HashMap<String, Integer> seenValues = new HashMap<>();
 
     //hardcode max length to 8 for now
+    int maxLength = getMaxLength();
     maxLength = 8;
     long cutoff = BigInteger.valueOf(10).pow(maxLength).longValue();
 
