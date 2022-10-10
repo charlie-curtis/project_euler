@@ -49,6 +49,13 @@ public class FileParser {
     return list.toArray(String[]::new);
   }
 
+  public String[] fromCsv() {
+
+    BufferedReader br = tryOpen();
+    String line = tryReadline(br);
+    return line.replace("\"", "").split(",");
+  }
+
   public int[][] to2DIntArray() {
     int[][] result = null;
     try {
