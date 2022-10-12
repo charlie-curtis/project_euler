@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class FileParser {
 
@@ -36,6 +38,18 @@ public class FileParser {
       System.exit(1);
     }
     return null;
+  }
+
+  public char[] toCharArray()
+  {
+    BufferedReader br = tryOpen();
+    String[] s = tryReadline(br).split(",");
+    char[] returnValue = new char[s.length];
+    for (int i = 0; i < s.length; i++) {
+      returnValue[i] = (char)Integer.parseInt(s[i]);
+
+    }
+    return returnValue;
   }
 
   public String[] toStringArray() {
