@@ -29,21 +29,18 @@ public class Problem74 {
     return count;
   }
 
-  private static int computeMaxChain(Long n)
+  private static int computeMaxChain(long n)
   {
-    BigInteger input = BigInteger.valueOf(n);
-    Set<BigInteger> numbersSeen = new HashSet<>();
-    while (!numbersSeen.contains(input)) {
-      numbersSeen.add(input);
-      BigInteger bigInt = BigInteger.valueOf(0);
-      while (input.compareTo(BigInteger.ZERO) == 1) {
-        String strValue = input.toString();
-        String lastDigit = strValue.substring(strValue.length()-1);
-        Long factorial = getFactorial(Integer.parseInt(lastDigit));
-        input = input.divide(BigInteger.valueOf(10));
-        bigInt = bigInt.add(BigInteger.valueOf(factorial));
+    Set<Long> numbersSeen = new HashSet<>();
+    while (!numbersSeen.contains(n)) {
+      numbersSeen.add(n);
+      long sum = 0;
+      while (n > 0) {
+
+        sum += getFactorial((int)n % 10);
+        n /= 10;
       }
-      input = bigInt;
+      n = sum;
     }
     return numbersSeen.size();
   }
