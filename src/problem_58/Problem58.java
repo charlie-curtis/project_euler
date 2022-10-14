@@ -46,15 +46,6 @@ public class Problem58 {
       iterations++;
     }
 
-
-    /*
-    for (int i = 0; i < holder.length; i++) {
-      for (int j = 0; j < holder.length; j++) {
-        System.out.printf("%s ", getNumberToPrint(holder[i][j]));
-      }
-      System.out.println();
-    }
-     */
     analyzeDiagonals(holder);
   }
 
@@ -70,7 +61,6 @@ public class Problem58 {
       int num2 = holder[middle-iteration][middle+iteration];
       int num3 = holder[middle+iteration][middle+iteration];
       int num4 = holder[middle+iteration][middle-iteration];
-      //System.out.printf("checking %d %d %d %d%n", num1, num2, num3, num4);
       numPrimes += calc.isPrime(num1) ? 1 : 0;
       numPrimes += calc.isPrime(num2) ? 1 : 0;
       numPrimes += calc.isPrime(num3) ? 1 : 0;
@@ -87,20 +77,5 @@ public class Problem58 {
     int answer = iteration-1;
     answer = answer*2 + 1;
     System.out.printf("Found a value for i = %d, so the side length should be %d%n", iteration, answer);
-  }
-
-  private static String getNumberToPrint(int n)
-  {
-    String s = String.valueOf(n);
-    int desiredPadding = 2 - s.length();
-
-    int i = 0;
-    StringBuffer sb = new StringBuffer();
-    while (i < desiredPadding) {
-      sb.append("0");
-      i++;
-    }
-    sb.append(s);
-    return sb.toString();
   }
 }
