@@ -5,13 +5,31 @@ import java.util.Arrays;
 
 public class PrimeCalculator {
 
-  private final int cutoff;
+  private int cutoff;
   private boolean[] isPrimeHolder;
   private final ArrayList<Integer> listOfPrimes = new ArrayList<>();
 
   public PrimeCalculator(int cutoff) {
     this.cutoff = cutoff;
-    initializePrimeHolder();
+    initializePrimeHolderAndPrimeList();
+  }
+
+  protected PrimeCalculator()
+  {
+
+  }
+
+  public void setCutoff(int cutoff)
+  {
+    this.cutoff = cutoff;
+  }
+
+  public static PrimeCalculator quickInitialize(int cutoff)
+  {
+    PrimeCalculator calc = new PrimeCalculator();
+    calc.setCutoff(cutoff);
+    calc.initializePrimeHolder();
+    return calc;
   }
 
   public ArrayList<Integer> getListOfPrimes() {
@@ -23,7 +41,8 @@ public class PrimeCalculator {
     return isPrimeHolder[n];
   }
 
-  private void initializePrimeHolder() {
+  private void initializePrimeHolder()
+  {
     isPrimeHolder = new boolean[this.cutoff + 1];
     Arrays.fill(isPrimeHolder, true);
     isPrimeHolder[1] = false;
@@ -31,12 +50,15 @@ public class PrimeCalculator {
     for (int i = 2; i <= this.cutoff; i++) {
       if (isPrimeHolder[i]) {
         int k = 2;
-        while (i * k <= this.cutoff) {
+        //hack to detect integer overflow
+        while (i * k <= this.cutoff && (i*k) > (i * (k-1))) {
           isPrimeHolder[i * k] = false;
           k++;
         }
       }
     }
+  }
+  private void initializePrimeHolderAndPrimeList() {
 
     for (int i = 2; i < isPrimeHolder.length; i++) {
       if (isPrimeHolder[i]) {
