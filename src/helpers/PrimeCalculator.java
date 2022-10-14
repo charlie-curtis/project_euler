@@ -50,8 +50,7 @@ public class PrimeCalculator {
     for (int i = 2; i <= this.cutoff; i++) {
       if (isPrimeHolder[i]) {
         int k = 2;
-        //hack to detect integer overflow
-        while (i * k <= this.cutoff && (i*k) > (i * (k-1))) {
+        while ((long)i * k <= this.cutoff) {
           isPrimeHolder[i * k] = false;
           k++;
         }
