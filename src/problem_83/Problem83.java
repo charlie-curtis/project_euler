@@ -2,9 +2,9 @@ package problem_83;
 
 import helpers.FileParser;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Objects;
+import java.util.List;
 import java.util.Optional;
 
 public class Problem83 {
@@ -18,46 +18,48 @@ public class Problem83 {
     int[][] input = getInput();
 
     int[][] dp = new int[input.length][input.length];
+    initialize(dp);
+
     dp[input.length-1][input.length-1] = input[input.length-1][input.length-1];
 
     //I think this needs to be called 4 times -- one for every direction. Calling it only 3 times produces the wrong
     //answer. Calling it multiple times is needed in order for propagations in the least-cost map to occur.
     //That behavior reminds me of the bellman-ford algo. I think I could also use dijkstras algo given their aren't
     //negative edges
-    computeDp(input, dp, false);
-    computeDp(input, dp, true);
-    computeDp(input, dp, true);
-    computeDp(input, dp, true);
+    computeDp(input, dp);
+    computeDp(input, dp);
+    computeDp(input, dp);
+    computeDp(input, dp);
     return dp[0][0];
   }
 
-  private static void computeDp(int[][] input,
-                                int[][] dp,
-                                boolean considerAllDirections
-  ) {
+  private static void computeDp(int[][] input, int[][] dp) {
     for (int i = input.length-1; i >= 0; i--) {
       for (int j = input.length-1; j >=0; j--) {
-        Integer downOption = (i+1 < input.length) ? dp[i+1][j] : null;
-        Integer rightOption = (j+1 < input.length) ? dp[i][j+1] : null;
-        Integer leftOption = (j-1 >=0) ? dp[i][j-1] : null;
-        Integer upOption = (i-1 >= 0) ? dp[i-1][j] : null;
-        ArrayList<Integer> options = new ArrayList<>();
-        options.add(rightOption);
-        options.add(downOption);
-        if (considerAllDirections) {
-          options.add(upOption);
-          options.add(leftOption);
+        if (i == input.length-1 && j == input.length-1) {
+          continue;
         }
+        Integer downOption = (i+1 < input.length) ? dp[i+1][j] : Integer.MAX_VALUE;
+        Integer rightOption = (j+1 < input.length) ? dp[i][j+1] : Integer.MAX_VALUE;
+        Integer leftOption = (j-1 >=0) ? dp[i][j-1] : Integer.MAX_VALUE;
+        Integer upOption = (i-1 >= 0) ? dp[i-1][j] : Integer.MAX_VALUE;
+        List<Integer> options = List.of(rightOption, leftOption, downOption, upOption) ;
         dp[i][j] = input[i][j] + getLeastCostPathFromOptions(options);
       }
     }
   }
 
-  private static int getLeastCostPathFromOptions(ArrayList<Integer> options) {
-    Optional<Integer> result = options.stream().filter(Objects::nonNull).min(Comparator.naturalOrder());
+  private static int getLeastCostPathFromOptions(List<Integer> options) {
+    Optional<Integer> result = options.stream().min(Comparator.naturalOrder());
     //If there are no options passed in, return 0 - this handles the case where we are at the bottom right index
     return result.orElse(0);
+  }
 
+  private static void initialize(int[][] dp)
+  {
+    for (int i = 0; i < dp.length; i++) {
+      Arrays.fill(dp[i], Integer.MAX_VALUE);
+    }
   }
 
   private static int[][] getInput()
