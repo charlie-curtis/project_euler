@@ -22,18 +22,20 @@ public class Problem83 {
 
     dp[input.length-1][input.length-1] = input[input.length-1][input.length-1];
 
-    //I think this needs to be called 4 times -- one for every direction. Calling it only 3 times produces the wrong
-    //answer. Calling it multiple times is needed in order for propagations in the least-cost map to occur.
-    //That behavior reminds me of the bellman-ford algo. I think I could also use dijkstras algo given their aren't
-    //negative edges
-    computeDp(input, dp);
-    computeDp(input, dp);
-    computeDp(input, dp);
-    computeDp(input, dp);
+    int count = 0;
+    //this propagation pattern reminds me of the bellman ford. I also wonder if we could use dijkstra here.
+    boolean didChangesOccur = true;
+    while (didChangesOccur) {
+      count++;
+      didChangesOccur = computeDp(input, dp);
+    }
+
+    System.out.printf("Map resolved in %d iterations%n", count);
     return dp[0][0];
   }
 
-  private static void computeDp(int[][] input, int[][] dp) {
+  private static boolean computeDp(int[][] input, int[][] dp) {
+    boolean didChangesOccur = false;
     for (int i = input.length-1; i >= 0; i--) {
       for (int j = input.length-1; j >=0; j--) {
         if (i == input.length-1 && j == input.length-1) {
@@ -44,9 +46,14 @@ public class Problem83 {
         Integer leftOption = (j-1 >=0) ? dp[i][j-1] : Integer.MAX_VALUE;
         Integer upOption = (i-1 >= 0) ? dp[i-1][j] : Integer.MAX_VALUE;
         List<Integer> options = List.of(rightOption, leftOption, downOption, upOption) ;
+        int prev = dp[i][j];
         dp[i][j] = input[i][j] + getLeastCostPathFromOptions(options);
+        if (dp[i][j] != prev) {
+          didChangesOccur = true;
+        }
       }
     }
+    return didChangesOccur;
   }
 
   private static int getLeastCostPathFromOptions(List<Integer> options) {
