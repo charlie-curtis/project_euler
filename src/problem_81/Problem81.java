@@ -2,6 +2,11 @@ package problem_81;
 
 import helpers.FileParser;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 public class Problem81 {
 
   public static void main(String[] args) {
@@ -15,17 +20,25 @@ public class Problem81 {
     int[][] input = parser.to2DIntArray();
     int[][] holder = new int[cutoff][cutoff];
 
-    holder[cutoff - 1][cutoff - 1] = input[cutoff - 1][cutoff - 1];
-    for (int j = holder.length - 2; j >= 0; j--) {
-      holder[holder.length - 1][j] = input[holder.length - 1][j] + holder[holder.length - 1][j + 1];
+    for (int i = 0; i < holder.length; i++) {
+      Arrays.fill(holder[i], Integer.MAX_VALUE);
     }
-    for (int i = holder.length - 2; i >= 0; i--) {
-      holder[i][holder.length - 1] = input[i][holder.length - 1] + holder[i + 1][holder.length - 1];
-    }
+    holder[holder.length -1][holder.length-1] = input[holder.length-1][holder.length-1];
 
-    for (int i = holder.length - 2; i >= 0; i--) {
-      for (int j = holder.length - 2; j >= 0; j--) {
-        holder[i][j] = input[i][j] + Math.min(holder[i][j + 1], holder[i + 1][j]);
+    for (int i = holder.length - 1; i >= 0; i--) {
+      for (int j = holder.length - 1; j >= 0; j--) {
+        if (i == holder.length-1 && j == holder.length-1) {
+          continue;
+        }
+        List<Integer> options = new ArrayList<>();
+        if (i+1 < holder.length) {
+          options.add(holder[i+1][j]);
+        }
+        if (j+1 < holder.length) {
+          options.add(holder[i][j+1]);
+        }
+        int minOption = options.stream().min(Comparator.naturalOrder()).orElseThrow(RuntimeException::new);
+        holder[i][j] = input[i][j] + minOption;
       }
     }
 
